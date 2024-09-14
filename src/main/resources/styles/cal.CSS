@@ -8,7 +8,7 @@
 }
 
 #front-button {
-    -fx-pref-width: 320px;
+    -fx-pref-width: 220px;
     -fx-font: bold italic 20pt "Arial";
     -fx-effect: dropshadow(one-pass-box, black, 8, 0.0, 2, 0);
 }

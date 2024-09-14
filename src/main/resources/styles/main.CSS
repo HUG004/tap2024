@@ -2,6 +2,6 @@
    -fx-background-color: #FF0000;
    -fx-background-image: url("../images/wallpapper.jpg"), url("../images/itcelaya.png");
    -fx-background-repeat: stretch, no-repeat;
-   -fx-background-size: auto, 200px;
+   -fx-background-size: cover, 200px;
    -fx-background-position: center, center;
 }
