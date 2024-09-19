@@ -17,8 +17,8 @@ public class Calculadora extends Stage {
     private VBox vBox;
     private Scene escena;
     private String[] strTeclas = {"7", "8", "9", "*", "4", "5", "6", "/", "1", "2", "3", "+", "0", ".", "=", "-"};
-    private double num1 = 0; // Guardará el primer número de la operación
-    private String operador = ""; // Guardará el operador (+, -, *, /)
+    private double num1 = 0; // guarda el primer número de la operación
+    private String operador = ""; // guarda el operador (+, -, *, /)
     private boolean start = true; // Indica si se está iniciando una nueva operación
     private boolean resultadoMostrado  = false;// para que el resultado no se pueda ultilizar como valor para otra operacion
 
@@ -65,12 +65,19 @@ public class Calculadora extends Stage {
 
     // Método para manejar la lógica cuando se presiona una tecla
     private void detectarTecla(String tecla) {
-        if (tecla.matches("[0-9\\.]")) { // Si es un número o un punto
+        if (tecla.matches("[0-9]")) { // Si es un número
             if (start) {
                 txtPantalla.clear(); // Limpia la pantalla si es el inicio de una nueva entrada
                 start = false; // Indica que se ha comenzado a escribir un número
             }
-            txtPantalla.appendText(tecla); // Añade el número o el punto a la pantalla
+            txtPantalla.appendText(tecla); // Añade el número a la pantalla
+        } else if (tecla.equals(".")) { // Si es un punto decimal
+            if (start) {
+                txtPantalla.setText("0."); // Si se presiona el punto al inicio, añade "0."
+                start = false;
+            } else if (!txtPantalla.getText().contains(".")) { // Solo añade un punto si no existe uno ya
+                txtPantalla.appendText(".");
+            }
         } else if (tecla.matches("[\\+\\-\\*/]")) { // Si es un operador (+, -, *, /)
             if (!operador.isEmpty() && !start) { // Realiza la operación intermedia si ya hay un operador
                 double num2 = Double.parseDouble(txtPantalla.getText());
@@ -95,7 +102,6 @@ public class Calculadora extends Stage {
             }
         }
     }
-
 
     // Método para realizar la operación matemática
     private double calcular(double num1, double num2, String operador) {
