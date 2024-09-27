@@ -20,7 +20,7 @@ public class Calculadora extends Stage {
     private double num1 = 0; // guarda el primer número de la operación
     private String operador = ""; // guarda el operador (+, -, *, /)
     private boolean start = true; // Indica si se está iniciando una nueva operación
-    private boolean resultadoMostrado  = false;// para que el resultado no se pueda ultilizar como valor para otra operacion
+    private boolean resultadoMostrado  = false;// para que el resultado no se pueda utilizar como valor para otra operación
 
     // Constructor de la clase
     public Calculadora() {
@@ -65,6 +65,11 @@ public class Calculadora extends Stage {
 
     // Método para manejar la lógica cuando se presiona una tecla
     private void detectarTecla(String tecla) {
+        //  Si la pantalla muestra "Error", reiniciar antes de cualquier operación
+        if (txtPantalla.getText().equals("Error")) {
+            clearPantalla(); // Reinicia la calculadora si hay un error
+        }
+
         if (tecla.matches("[0-9]")) { // Si es un número
             if (start) {
                 txtPantalla.clear(); // Limpia la pantalla si es el inicio de una nueva entrada

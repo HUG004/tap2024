@@ -1,18 +1,13 @@
 package com.example.tap2024;
+import com.example.tap2024.models.Conexion;
 import com.example.tap2024.vistas.Calculadora;
 import com.example.tap2024.vistas.Loteria;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Orientation;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import java.io.IOException;
 
@@ -21,7 +16,7 @@ public class HelloApplication extends Application {
 private BorderPane bdpPrincipal;
 private MenuBar mnbPrincipal;
 private Menu menCompetencia1, menCompetencia2, menSalir;
-private MenuItem mitCalculadora, mitLoteria;
+private MenuItem mitCalculadora, mitLoteria, mitSpotify;
 
 public void CrearUI(){
 mitCalculadora = new MenuItem("Calculadora");
@@ -30,8 +25,11 @@ mitCalculadora.setOnAction(event -> new Calculadora());
 mitLoteria = new MenuItem("Loteria");
 mitLoteria.setOnAction(event -> new Loteria());
 
+mitSpotify = new MenuItem("Spotify");
+mitSpotify.setOnAction(actionEvent -> new ListaCliente());
+
 menCompetencia1 = new Menu("Competencia 1");
-menCompetencia1.getItems().addAll(mitCalculadora, mitLoteria);
+menCompetencia1.getItems().addAll(mitCalculadora, mitLoteria, mitSpotify);
 mnbPrincipal = new MenuBar(menCompetencia1);
 bdpPrincipal = new BorderPane();
 bdpPrincipal.setTop(mnbPrincipal);
@@ -47,6 +45,8 @@ stage.setTitle("Hello!");
 stage.setScene(scene);
 stage.setMaximized(true);
 stage.show();
+
+    Conexion.CrearConexion();
 }
 
 public static void main(String... args) {

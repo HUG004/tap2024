@@ -1,4 +1,17 @@
-.root{
-    -fx-background-image: url("https://static.vecteezy.com/system/resources/previews/007/062/175/non_2x/cinco-de-mayo-background-free-vector.jpg");
-    -fx-background-repeat: stretch;
+.card-button {
+    -fx-padding: 5px;
+    -fx-background-radius: 10;
+    -fx-border-color: #333;
+    -fx-border-width: 2px;
 }
+
+.card-button.marked {
+    -fx-background-color: #FFD700; /* Color dorado */
+    -fx-border-color: #FF0000; /* Borde rojo */
+}
+
+#lblTimer {
+    -fx-font-size: 24px;
+    -fx-text-fill: red; /* Cambia el color del temporizador */
+}
+
