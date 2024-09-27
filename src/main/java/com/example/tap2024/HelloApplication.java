@@ -1,6 +1,7 @@
 package com.example.tap2024;
 import com.example.tap2024.models.Conexion;
 import com.example.tap2024.vistas.Calculadora;
+import com.example.tap2024.vistas.ListaClientes;
 import com.example.tap2024.vistas.Loteria;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -26,7 +27,7 @@ mitLoteria = new MenuItem("Loteria");
 mitLoteria.setOnAction(event -> new Loteria());
 
 mitSpotify = new MenuItem("Spotify");
-mitSpotify.setOnAction(actionEvent -> new ListaCliente());
+mitSpotify.setOnAction(actionEvent -> new ListaClientes());
 
 menCompetencia1 = new Menu("Competencia 1");
 menCompetencia1.getItems().addAll(mitCalculadora, mitLoteria, mitSpotify);
