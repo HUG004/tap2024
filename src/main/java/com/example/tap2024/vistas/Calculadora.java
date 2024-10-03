@@ -36,7 +36,13 @@ public class Calculadora extends Stage {
         txtPantalla = new TextField("0");
         txtPantalla.setAlignment(Pos.CENTER_RIGHT);
         txtPantalla.setEditable(false);
+        txtPantalla.setPrefSize(300, 70); // Ajusta el ancho y la altura
+
         gdpTeclado = new GridPane();
+
+        // Añadir espacio entre los botones
+        gdpTeclado.setHgap(10); // Espacio horizontal
+        gdpTeclado.setVgap(10); // Espacio vertical
         CrearTeclado();
 
         btnClear = new Button("Clear");
@@ -44,7 +50,7 @@ public class Calculadora extends Stage {
         btnClear.setOnAction(event -> clearPantalla()); // Limpia la pantalla cuando se presiona 'Clear'
 
         vBox = new VBox(txtPantalla, gdpTeclado, btnClear);
-        escena = new Scene(vBox, 200, 200);
+        escena = new Scene(vBox, 350, 500);
         escena.getStylesheets().add(getClass().getResource("/styles/cal.css").toString());
     }
 
@@ -53,7 +59,7 @@ public class Calculadora extends Stage {
         for (int i = 0; i < arBtns.length; i++) {
             for (int j = 0; j < arBtns.length; j++) {
                 arBtns[j][i] = new Button(strTeclas[4 * i + j]);
-                arBtns[j][i].setPrefSize(50, 50);
+                arBtns[j][i].setPrefSize(80, 80);
                 arBtns[j][i].getStyleClass().add("button");
                 int finalI = i;
                 int finalJ = j;

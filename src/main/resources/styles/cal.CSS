@@ -12,3 +12,6 @@
     -fx-font: bold italic 20pt "Arial";
     -fx-effect: dropshadow(one-pass-box, black, 8, 0.0, 2, 0);
 }
+.root{
+-fx-base: rgb(50,50,50);
+}

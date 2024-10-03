@@ -1,5 +1,6 @@
 package com.example.tap2024;
 import com.example.tap2024.models.Conexion;
+import com.example.tap2024.vistas.BuscaMinas;
 import com.example.tap2024.vistas.Calculadora;
 import com.example.tap2024.vistas.ListaClientes;
 import com.example.tap2024.vistas.Loteria;
@@ -14,43 +15,46 @@ import java.io.IOException;
 
 public class HelloApplication extends Application {
 
-private BorderPane bdpPrincipal;
-private MenuBar mnbPrincipal;
-private Menu menCompetencia1, menCompetencia2, menSalir;
-private MenuItem mitCalculadora, mitLoteria, mitSpotify;
+    private BorderPane bdpPrincipal;
+    private MenuBar mnbPrincipal;
+    private Menu menCompetencia1, menCompetencia2, menSalir;
+    private MenuItem mitCalculadora, mitLoteria, mitSpotify, mitBuscaminas;
 
-public void CrearUI(){
-mitCalculadora = new MenuItem("Calculadora");
-mitCalculadora.setOnAction(event -> new Calculadora());
+    public void CrearUI(){
+        mitCalculadora = new MenuItem("Calculadora");
+        mitCalculadora.setOnAction(event -> new Calculadora());
 
-mitLoteria = new MenuItem("Loteria");
-mitLoteria.setOnAction(event -> new Loteria());
+        mitLoteria = new MenuItem("Loteria");
+        mitLoteria.setOnAction(event -> new Loteria());
 
-mitSpotify = new MenuItem("Spotify");
-mitSpotify.setOnAction(actionEvent -> new ListaClientes());
+        mitSpotify = new MenuItem("Spotify");
+        mitSpotify.setOnAction(actionEvent -> new ListaClientes());
 
-menCompetencia1 = new Menu("Competencia 1");
-menCompetencia1.getItems().addAll(mitCalculadora, mitLoteria, mitSpotify);
-mnbPrincipal = new MenuBar(menCompetencia1);
-bdpPrincipal = new BorderPane();
-bdpPrincipal.setTop(mnbPrincipal);
-}
+        mitBuscaminas = new MenuItem("Busca Minas");
+        mitBuscaminas.setOnAction(actionEvent -> new BuscaMinas());
 
-@Override
-public void start(Stage stage) throws IOException {
+        menCompetencia1 = new Menu("Competencia 1");
+        menCompetencia1.getItems().addAll(mitCalculadora, mitLoteria, mitSpotify, mitBuscaminas);
+        mnbPrincipal = new MenuBar(menCompetencia1);
+        bdpPrincipal = new BorderPane();
+        bdpPrincipal.setTop(mnbPrincipal);
+    }
+
+    @Override
+    public void start(Stage stage) throws IOException {
 //FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
-CrearUI();
-Scene scene = new Scene(bdpPrincipal, 320, 240);
-scene.getStylesheets().add(getClass().getResource("/styles/main.css").toExternalForm());
-stage.setTitle("Hello!");
-stage.setScene(scene);
-stage.setMaximized(true);
-stage.show();
+        CrearUI();
+        Scene scene = new Scene(bdpPrincipal, 320, 240);
+        scene.getStylesheets().add(getClass().getResource("/styles/main.css").toExternalForm());
+        stage.setTitle("Hello!");
+        stage.setScene(scene);
+        stage.setMaximized(true);
+        stage.show();
 
-    Conexion.CrearConexion();
-}
+        Conexion.CrearConexion();
+    }
 
-public static void main(String... args) {
-launch();
-}
+    public static void main(String... args) {
+        launch();
+    }
 }
