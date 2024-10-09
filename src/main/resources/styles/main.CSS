@@ -1,6 +1,6 @@
 .root{
    -fx-background-color: #FF0000;
-   -fx-background-image: url("../images/wallpapper.jpg"), url("../images/itcelaya.png");
+   -fx-background-image: url("../images/car.png");
    -fx-background-repeat: stretch, no-repeat;
    -fx-background-size: cover, 200px;
    -fx-background-position: center, center;
