@@ -28,7 +28,7 @@ public class ListaClientes extends Stage {
         tlbMenu = new ToolBar();
         ImageView imv = new ImageView(getClass().getResource("/images/NEXT.png").toString());
         Button btnaddCte = new Button();
-        btnaddCte.setOnAction(actionEvent -> new FormCliente());
+        btnaddCte.setOnAction(actionEvent -> new FormCliente(tbvClientes, null));
         btnaddCte.setGraphic(imv);
         tlbMenu.getItems().add(btnaddCte);
         CrearTable();

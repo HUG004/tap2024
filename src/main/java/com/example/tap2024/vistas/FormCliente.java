@@ -5,6 +5,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -18,12 +19,22 @@ public class FormCliente extends Stage {
     private Button btnGuardar;
     private VBox vBox;
     private ClienteDAO objCte;
+    private TableView<ClienteDAO> tbvCliente;
 
     private Scene escena;
-    public FormCliente(){
-        objCte = new ClienteDAO();
+    public FormCliente(TableView<ClienteDAO> tbv, ClienteDAO objC){
+        this.tbvCliente = tbv;
         CrearUI();
-        this.setTitle("Agregar Cliente");
+       if (objC != null){
+           this.objCte = objC;
+           txtNomCte.setText(objCte.getNomCte());
+           txtEmailCte.setText(objCte.getEmailCte());
+           txtTelCte.setText(objCte.getTelCte());
+           this.setTitle("Editar Cliente");
+       }else {
+           this.objCte = new ClienteDAO();
+           this.setTitle("Agregar Cliente");
+       }
         this.setScene(escena);
         this.show();
     }
@@ -48,17 +59,26 @@ public class FormCliente extends Stage {
         objCte.setTelCte(txtTelCte.getText());
         String msj;
         Alert.AlertType type;
-        if (objCte.INSERT()>0){
-            msj = "registro";
-            type = Alert.AlertType.INFORMATION;
-        }else {
-            msj = "Ocurrio un error. Intente otra vez";
-            type = Alert.AlertType.INFORMATION;
+
+        if(objCte.getIdCte() > 0 ){
+            objCte.UPDATE();
+        }else{
+            if (objCte.INSERT()>0){
+                msj = "registro";
+                type = Alert.AlertType.INFORMATION;
+            }else {
+                msj = "Ocurrio un error. Intente otra vez";
+                type = Alert.AlertType.INFORMATION;
+            }
+            Alert alert = new Alert(type);
+            alert.setTitle("Mensaje del sistema");
+            alert.setContentText(msj);
+            alert.showAndWait();
         }
-        Alert alert = new Alert(type);
-        alert.setTitle("Mensaje del sistema");
-        alert.setContentText(msj);
-        alert.showAndWait();
+
+
+        tbvCliente.setItems(objCte.SELECTALL());
+        tbvCliente.refresh();
     }
 
 }

@@ -21,11 +21,29 @@ public class BuscaMinas {
         VBox vbox = new VBox();
         TextField txtBombCount = new TextField();
         Button btnCreate = new Button("Crear campo minado");
-        btnCreate.setOnAction(actionEvent -> {
-            bombCount = Integer.parseInt(txtBombCount.getText());
-            celdasDescubiertas = 0; // reiniciar el contador de celdas descubiertas
-            createMineField(bombCount);
-            stage.setScene(createGameScene());
+        btnCreate.setOnAction(actionEvent -> {// evento de boton crear campo
+            String input = txtBombCount.getText().trim(); // Elimina espacios en blanco
+
+            if (input.isEmpty()) {
+                showAlert("Error", "Por favor, ingresa un número válido de bombas.");
+                return;
+            }
+
+            try {
+                bombCount = Integer.parseInt(input); // Convertir a entero
+            } catch (NumberFormatException e) {
+                showAlert("Error", "El valor ingresado no es un número válido.");
+                return;
+            }
+
+            if (bombCount < 1 || bombCount >= gridSize * gridSize) {
+                showAlert("Error", "El número de bombas debe ser mayor a 0 y menor que el total de casillas.");
+                return;
+            }
+
+            celdasDescubiertas = 0; // Reinicia el contador de celdas descubiertas
+            createMineField(bombCount); // Crea el campo minado
+            stage.setScene(createGameScene()); // Cambia a la escena del juego
         });
         vbox.getChildren().addAll(txtBombCount, btnCreate);
         Scene scene = new Scene(vbox, 300, 200);
