@@ -5,6 +5,7 @@ import com.example.tap2024.models.ClienteDAO;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -26,47 +27,50 @@ public class ListaClientes extends Stage {
     private void CrearUI() {
 
         tlbMenu = new ToolBar();
-        ImageView imv = new ImageView(getClass().getResource("/images/NEXT.png").toString());
-        Button btnaddCte = new Button();
-        btnaddCte.setOnAction(actionEvent -> new FormCliente(tbvClientes, null));
-        btnaddCte.setGraphic(imv);
-        tlbMenu.getItems().add(btnaddCte);
-        CrearTable();
+        Button btnAddCte = new Button("Agregar Cliente");
+        btnAddCte.setOnAction(actionEvent -> new FormCliente(tbvClientes,null));
+        tlbMenu.getItems().add(btnAddCte);
 
+        CrearTable();
         vBox = new VBox(tlbMenu,tbvClientes);
         escena = new Scene(vBox,500,250);
     }
-    private void CrearTable(){
-        ClienteDAO objCte = new ClienteDAO();
+
+    private void CrearTable() {
+        ClienteDAO objClt = new ClienteDAO();
         tbvClientes = new TableView<>();
 
-        TableColumn<ClienteDAO,String> tbcNomCte = new TableColumn<>("Cliente");
-        tbcNomCte.setCellValueFactory(new PropertyValueFactory<>("nomCte"));
+        TableColumn<ClienteDAO, String> tbcNom = new TableColumn<>("Nombre");
+        tbcNom.setCellValueFactory(new PropertyValueFactory<>("nomClt"));
 
-        TableColumn<ClienteDAO,String> tbcEmailCte = new TableColumn<>("Email");
-        tbcEmailCte.setCellValueFactory(new PropertyValueFactory<>("emailCte"));
+        TableColumn<ClienteDAO, String> tbcTel = new TableColumn<>("Telefono");
+        tbcTel.setCellValueFactory(new PropertyValueFactory<>("telClt"));
 
-        TableColumn<ClienteDAO,String> tbcTelCte = new TableColumn<>("Telefono");
-        tbcTelCte.setCellValueFactory(new PropertyValueFactory<>("telCte"));
+        TableColumn<ClienteDAO, String> tbcEmail = new TableColumn<>("Email");
+        tbcEmail.setCellValueFactory(new PropertyValueFactory<>("emailClt"));
 
-        TableColumn<ClienteDAO,String> tbcEditar = new TableColumn<>("");
-        tbcEditar.setCellFactory(new Callback<TableColumn<ClienteDAO, String>, TableCell<ClienteDAO, String>>() {
-            @Override
-            public TableCell<ClienteDAO, String> call(TableColumn<ClienteDAO, String> clienteDAOStringTableColumn) {
-                return new ButtonCell("Editar");
-            }
-        });
+        TableColumn<ClienteDAO, String> tbcEditar = new TableColumn<>("Editar");
+        tbcEditar.setCellFactory(col -> new ButtonCell<>(
+                "Editar",
+                cliente -> new FormCliente(tbvClientes, cliente),  // Acción de edición
+                cliente -> {
+                    cliente.DELETE();  // Acción de eliminación
+                    tbvClientes.setItems(cliente.SELECTALL());
+                }
+        ));
 
-        TableColumn<ClienteDAO,String> tbcEliminar = new TableColumn<>("");
-        tbcEliminar.setCellFactory(new Callback<TableColumn<ClienteDAO, String>, TableCell<ClienteDAO, String>>() {
-            @Override
-            public TableCell<ClienteDAO, String> call(TableColumn<ClienteDAO, String> clienteDAOStringTableColumn) {
-                return new ButtonCell("Eliminar");
-            }
-        });
+        TableColumn<ClienteDAO, String> tbcEliminar = new TableColumn<>("Eliminar");
+        tbcEliminar.setCellFactory(col -> new ButtonCell<>(
+                "Eliminar",
+                cliente -> new FormCliente(tbvClientes, cliente),  // Reusar acción de edición si quieres
+                cliente -> {
+                    cliente.DELETE();  // Acción de eliminación
+                    tbvClientes.setItems(cliente.SELECTALL());
+                }
+        ));
 
 
-        tbvClientes.getColumns().addAll(tbcNomCte,tbcEmailCte,tbcTelCte,tbcEditar, tbcEliminar);
-        tbvClientes.setItems(objCte.SELECTALL());
+        tbvClientes.getColumns().addAll(tbcNom,tbcTel,tbcEmail,tbcEditar,tbcEliminar);
+        tbvClientes.setItems(objClt.SELECTALL());
     }
 }

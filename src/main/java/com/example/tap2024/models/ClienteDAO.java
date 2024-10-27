@@ -1,98 +1,96 @@
 package com.example.tap2024.models;
 
+import java.sql.SQLException;
+import java.sql.Statement;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 public class ClienteDAO {
-    private int idCte;
-    private String nomCte;
-    private String telCte;
-    private String emailCte;
+    private int idClt;
+    private String nomClt;
+    private String telClt;
+    private String emailClt;
 
-    public int getIdCte() {
-        return idCte;
+    public int getIdClt() {
+        return idClt;
+    }
+    public void setIdClt(int idClt) {
+        this.idClt = idClt;
     }
 
-    public void setIdCte(int idCte) {
-        this.idCte = idCte;
+    public String getNomClt() {
+        return nomClt;
+    }
+    public void setNomClt(String nomClt) {
+        this.nomClt = nomClt;
     }
 
-    public String getNomCte() {
-        return nomCte;
+    public String getTelClt() {
+        return telClt;
+    }
+    public void setTelClt(String telClt) {
+        this.telClt = telClt;
     }
 
-    public void setNomCte(String nomCte) {
-        this.nomCte = nomCte;
+    public String getEmailClt() {
+        return emailClt;
     }
-
-    public String getTelCte() {
-        return telCte;
-    }
-
-    public void setTelCte(String telCte) {
-        this.telCte = telCte;
-    }
-
-    public String getEmailCte() {
-        return emailCte;
-    }
-
-    public void setEmailCte(String emailCte) {
-        this.emailCte = emailCte;
+    public void setEmailClt(String emailClt) {
+        this.emailClt = emailClt;
     }
 
     public int INSERT(){
-        String query = "INSERT INTO tblCliente(nomCte,telCte,emailCte)" +
-                " VALUES('"+this.nomCte+"','"+this.telCte+"','"+this.emailCte+"')";
         int rowCount;
-        try{
-            Statement stmt = Conexion.connection.createStatement();
+        String query ="INSERT INTO tblcliente(nomClt, telClt, emailClt)" +
+                " VALUES('"+this.nomClt+"','"+this.telClt+"','"+this.emailClt+"')";
+        try {
+            Statement stmt = Conexion.conexion.createStatement();
             rowCount = stmt.executeUpdate(query);
-        }catch (Exception e){
+        } catch (SQLException e) {
             e.printStackTrace();
-            rowCount=0;
+            rowCount = 0;
         }
         return rowCount;
     }
+
     public void UPDATE(){
 
-        String query = "UPDATE tblCliente SET nomCte = '"+this.nomCte+"'," +
-                "telCte = '"+this.telCte+"', emailCte = '"+this.emailCte+"' " +
-                "WHERE idCte = "+this.idCte;
-        try{
-            Statement stmt = Conexion.connection.createStatement();
+        String query="UPDATE tblcliente SET nomClt = '"+this.nomClt+"', telClt = '"+this.telClt+"', " +
+                "emailClt = '"+this.emailClt+"' WHERE idClt = "+this.idClt;
+        try {
+            Statement stmt = Conexion.conexion.createStatement();
             stmt.executeUpdate(query);
-        }catch (Exception e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
     public void DELETE(){
-        String query = "DELETE FROM tblCliente WHERE idCte = " + this.idCte;
-        try{
-            Statement stmt = Conexion.connection.createStatement();
+        String query="DELETE FROM tblcliente WHERE idClt = " + this.idClt;
+        try {
+            Statement stmt = Conexion.conexion.createStatement();
             stmt.executeUpdate(query);
-        }catch (Exception e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
     public ObservableList<ClienteDAO> SELECTALL(){
         ClienteDAO objCte;
         String query = "SELECT * FROM tblCliente";
         ObservableList<ClienteDAO> listaC = FXCollections.observableArrayList();
         try{
-            Statement stmt = Conexion.connection.createStatement();
+            Statement stmt = Conexion.conexion.createStatement();
             ResultSet res = stmt.executeQuery(query);
             while( res.next() ){
                 objCte = new ClienteDAO();
-                objCte.idCte = res.getInt(1);
-                objCte.nomCte = res.getString(2);
-                objCte.telCte = res.getString(3);
-                objCte.emailCte = res.getString(4);
+                objCte.idClt = res.getInt(1);
+                objCte.nomClt = res.getString(2);
+                objCte.telClt = res.getString(3);
+                objCte.emailClt = res.getString(4);
                 listaC.add(objCte);
             }
         }catch(Exception e){
@@ -101,4 +99,6 @@ public class ClienteDAO {
 
         return listaC;
     }
+
+
 }

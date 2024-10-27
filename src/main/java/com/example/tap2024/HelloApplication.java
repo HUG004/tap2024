@@ -1,9 +1,7 @@
 package com.example.tap2024;
+import com.example.tap2024.components.CorredorThread;
 import com.example.tap2024.models.Conexion;
-import com.example.tap2024.vistas.BuscaMinas;
-import com.example.tap2024.vistas.Calculadora;
-import com.example.tap2024.vistas.ListaClientes;
-import com.example.tap2024.vistas.Loteria;
+import com.example.tap2024.vistas.*;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -19,7 +17,7 @@ public class HelloApplication extends Application {
     private BorderPane bdpPrincipal;
     private MenuBar mnbPrincipal;
     private Menu menCompetencia1, menCompetencia2, menSalir;
-    private MenuItem mitCalculadora, mitLoteria, mitSpotify, mitBuscaminas;
+    private MenuItem mitCalculadora, mitLoteria, mitSpotify, mitBuscaminas, mitPista;
 
     public void CrearUI(){
         mitCalculadora = new MenuItem("Calculadora");
@@ -29,16 +27,26 @@ public class HelloApplication extends Application {
         mitLoteria.setOnAction(event -> new Loteria());
 
         mitSpotify = new MenuItem("Spotify");
-        mitSpotify.setOnAction(actionEvent -> new ListaClientes());
+        mitSpotify.setOnAction(actionEvent -> new Login());
 
         mitBuscaminas = new MenuItem("Busca Minas");
         mitBuscaminas.setOnAction(actionEvent -> new BuscaMinas());
 
         menCompetencia1 = new Menu("Competencia 1");
         menCompetencia1.getItems().addAll(mitCalculadora, mitLoteria, mitSpotify, mitBuscaminas);
-        mnbPrincipal = new MenuBar(menCompetencia1);
+
+        mitPista = new MenuItem("Pista");
+        mitPista.setOnAction(actionEvent -> new Pista());
+
+        menCompetencia2 = new Menu("Competencia 2");
+        menCompetencia2.getItems().addAll(mitPista);
+
+        mnbPrincipal = new MenuBar(menCompetencia1, menCompetencia2);
+
         bdpPrincipal = new BorderPane();
         bdpPrincipal.setTop(mnbPrincipal);
+
+
     }
 
     @Override
@@ -52,7 +60,7 @@ FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello
         stage.setMaximized(true);
         stage.show();
 
-        Conexion.CrearConexion();
+        Conexion.crearConexion();
     }
 
     public static void main(String... args) {

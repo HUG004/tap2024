@@ -7,5 +7,7 @@ module com.example.tap2024 {
     exports com.example.tap2024;
     requires org.kordamp.bootstrapfx.core;
     requires java.sql;
+    requires javafx.graphics;
     opens com.example.tap2024.models;
+
 }

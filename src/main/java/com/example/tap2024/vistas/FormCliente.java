@@ -10,73 +10,83 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.security.PrivateKey;
 
 public class FormCliente extends Stage {
-    private TextField txtNomCte;
-    private TextField txtEmailCte;
-    private TextField txtTelCte;
+
+    private Scene scene;
+
+    private TextField txtnomClt;
+    private TextField txttelClt;
+    private TextField txtemailClt;
     private Button btnGuardar;
-    private VBox vBox;
+    private VBox vbox;
     private ClienteDAO objCte;
     private TableView<ClienteDAO> tbvCliente;
 
-    private Scene escena;
-    public FormCliente(TableView<ClienteDAO> tbv, ClienteDAO objC){
+    public FormCliente(TableView<ClienteDAO> tbv, ClienteDAO objC) {
         this.tbvCliente = tbv;
         CrearUI();
-       if (objC != null){
-           this.objCte = objC;
-           txtNomCte.setText(objCte.getNomCte());
-           txtEmailCte.setText(objCte.getEmailCte());
-           txtTelCte.setText(objCte.getTelCte());
-           this.setTitle("Editar Cliente");
-       }else {
-           this.objCte = new ClienteDAO();
-           this.setTitle("Agregar Cliente");
-       }
-        this.setScene(escena);
+        if(objC != null) {
+            this.objCte = objC;
+            txtnomClt.setText(objCte.getNomClt());
+            txtemailClt.setText(objCte.getEmailClt());
+            txttelClt.setText(objCte.getTelClt());
+            this.setTitle("Editar cliente");
+
+        }
+        else{
+            this.objCte = new ClienteDAO();
+            this.setTitle("Agregar cliente");
+        }
+        this.setScene(scene);
         this.show();
     }
+
     private void CrearUI(){
-        txtNomCte = new TextField();
-        txtNomCte.setPromptText("Nombre del cliente");
-        txtEmailCte = new TextField();
-        txtEmailCte.setPromptText("Email del cliente");
-        txtTelCte = new TextField();
-        txtTelCte.setPromptText("Telefono del cliente");
+        txtnomClt = new TextField();
+        txtnomClt.setPromptText("Nombre del cliente");
+
+        txtemailClt = new TextField();
+        txtemailClt.setPromptText("Email del cliente");
+
+        txttelClt = new TextField();
+        txttelClt.setPromptText("Telefono del cliente");
+
         btnGuardar = new Button("Guardar");
         btnGuardar.setOnAction(actionEvent -> GuardarCliente());
-        vBox = new VBox(txtNomCte,txtEmailCte,txtTelCte,btnGuardar);
-        vBox.setPadding(new Insets(10));
-        vBox.setSpacing(10);
-        escena = new Scene(vBox,350,150);
+
+        vbox = new VBox(txtnomClt,txtemailClt,txttelClt,btnGuardar);
+        vbox.setPadding(new Insets(10));
+        vbox.setSpacing(10);
+
+        scene = new Scene(vbox,300,150);
     }
 
     private void GuardarCliente() {
-        objCte.setEmailCte(txtEmailCte.getText());
-        objCte.setNomCte(txtNomCte.getText());
-        objCte.setTelCte(txtTelCte.getText());
+        objCte.setEmailClt(txtemailClt.getText());
+        objCte.setNomClt(txtnomClt.getText());
+        objCte.setTelClt(txttelClt.getText());
         String msj;
         Alert.AlertType type;
 
-        if(objCte.getIdCte() > 0 ){
+        if(objCte.getIdClt()>0){
+
             objCte.UPDATE();
-        }else{
-            if (objCte.INSERT()>0){
-                msj = "registro";
-                type = Alert.AlertType.INFORMATION;
-            }else {
-                msj = "Ocurrio un error. Intente otra vez";
-                type = Alert.AlertType.INFORMATION;
-            }
-            Alert alert = new Alert(type);
-            alert.setTitle("Mensaje del sistema");
-            alert.setContentText(msj);
-            alert.showAndWait();
         }
+        else {
+            if (objCte.INSERT() > 0) {
+                msj = "Registro insertado";
+                type = Alert.AlertType.INFORMATION;
+            } else {
+                msj = "Ocurrio un error al insertar, intente de nuevo";
+                type = Alert.AlertType.ERROR;
+            }
 
-
+            Alert alerta = new Alert(type);
+            alerta.setTitle("Mensaje del Sistema");
+            alerta.setContentText(msj);
+            alerta.showAndWait();
+        }
         tbvCliente.setItems(objCte.SELECTALL());
         tbvCliente.refresh();
     }

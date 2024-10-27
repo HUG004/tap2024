@@ -1,0 +1,29 @@
+/* styles.css */
+
+.root {
+    -fx-background-color: #f3f4f6; /* Light background color */
+    font-family: 'Arial', sans-serif; /* Font style */
+}
+
+.table {
+    -fx-font-size: 14px; /* Table font size */
+    -fx-background-color: white; /* Table background */
+    -fx-border-color: #d1d5db; /* Table border */
+    -fx-border-width: 1px; /* Border width */
+}
+
+.table .column-header {
+    -fx-background-color: #4CAF50; /* Header background color */
+    -fx-text-fill: white; /* Header text color */
+}
+
+.button {
+    -fx-background-color: #4CAF50; /* Button color */
+    -fx-text-fill: white; /* Button text color */
+    -fx-padding: 10px 20px; /* Button padding */
+    -fx-border-radius: 5px; /* Rounded corners */
+}
+
+.button:hover {
+    -fx-background-color: #45a049; /* Darker button on hover */
+}
