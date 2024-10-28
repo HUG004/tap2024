@@ -26,7 +26,7 @@ public class FormArtistaCancion extends Stage {
     public FormArtistaCancion(TableView<ArtistaCancionDAO> tbv , ArtistaCancionDAO objAC){
         this.tbvArtistaCancion = tbv;
         this.objArtCan = objAC != null ? objAC : new ArtistaCancionDAO();
-        this.esNuevo = objAC == null; // Si objAC es null, es un nuevo registro
+        this.esNuevo = objAC == null;
         CrearUI();
 
         if(objAC != null){
@@ -82,13 +82,13 @@ public class FormArtistaCancion extends Stage {
             objArtCan.setInterpretado(txtInterpretado.getText());
 
             String mensaje;
-            if (esNuevo) {  // Si es un nuevo registro
+            if (esNuevo) {
                 if (objArtCan.INSERT() > 0) {
                     mensaje = "Relación agregada correctamente";
                 } else {
                     mensaje = "Error al agregar la relación";
                 }
-            } else {  // Editar registro existente
+            } else {
                 objArtCan.UPDATE();
                 mensaje = "Relación actualizada correctamente";
             }
@@ -107,4 +107,3 @@ public class FormArtistaCancion extends Stage {
         alerta.showAndWait();
     }
 }
-

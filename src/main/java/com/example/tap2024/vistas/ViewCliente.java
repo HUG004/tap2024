@@ -25,16 +25,16 @@ public class ViewCliente extends Stage {
         tbvCanciones = new TableView<>();
         CrearTable();
 
-        // Botones para el historial y los datos personales
         btnVerHistorial = new Button("Ver Historial de Compras");
         btnVerDatosPersonales = new Button("Ver Datos Personales");
 
-        // Eventos para los botones
         btnVerHistorial.setOnAction(event -> verHistorialCompras());
         btnVerDatosPersonales.setOnAction(event -> verDatosPersonales());
 
         vBox = new VBox(10, tbvCanciones, btnVerHistorial, btnVerDatosPersonales);
         escena = new Scene(vBox, 600, 400);
+        escena.getStylesheets().add(getClass().getResource("/styles/Listas.CSS").toExternalForm());
+
     }
 
     private void CrearTable() {
@@ -46,12 +46,10 @@ public class ViewCliente extends Stage {
         TableColumn<CancionDAO, Float> tbcCosto = new TableColumn<>("Costo Canción");
         tbcCosto.setCellValueFactory(new PropertyValueFactory<>("costoCancion"));
 
-        // Agregar columnas a la tabla
         tbvCanciones.getColumns().addAll(tbcNombre, tbcCosto);
         tbvCanciones.setItems(objCan.SELECTALL());
     }
 
-    // Método para mostrar el historial de compras
     private void verHistorialCompras() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Historial de Compras");
@@ -60,7 +58,6 @@ public class ViewCliente extends Stage {
         alert.showAndWait();
     }
 
-    // Método para mostrar los datos personales del usuario
     private void verDatosPersonales() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Datos Personales");

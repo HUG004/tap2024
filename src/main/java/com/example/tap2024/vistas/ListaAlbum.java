@@ -8,10 +8,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.io.File;
+import java.io.ByteArrayInputStream;
 
 public class ListaAlbum extends Stage {
     private TableView<AlbumDAO> tbvAlbum;
@@ -27,54 +26,23 @@ public class ListaAlbum extends Stage {
     }
 
     private void CrearUI() {
-        escena = new Scene(new VBox(), 600, 400);
-        escena.getStylesheets().add(getClass().getResource("/styles/ListaAlbum.CSS").toExternalForm());
-
+        tlbMenu = new ToolBar();
         tlbMenu = new ToolBar();
         Button btnAddAlbum = new Button("Agregar Álbum");
-        Button btnCargarImagen = new Button("Cargar Imagen");
-        btnCargarImagen.setOnAction(actionEvent -> cargarImagen());
-
-        tlbMenu.getItems().addAll(btnAddAlbum, btnCargarImagen);
+        btnAddAlbum.getStyleClass().add("button");  // Aplica estilo de botón
+        btnAddAlbum.setOnAction(actionEvent -> new FormAlbum(tbvAlbum, null));
+        tlbMenu.getItems().add(btnAddAlbum);
 
         CrearTable();
         vBox = new VBox(tlbMenu, tbvAlbum);
-        vBox.getStyleClass().add("root"); // Aplicar estilo raíz
-        escena.setRoot(vBox); // Establecer el contenedor como raíz de la escena
+        escena = new Scene(vBox, 600, 400);
+        escena.getStylesheets().add(getClass().getResource("/styles/Listas.CSS").toExternalForm());
     }
-
-    private AlbumDAO albumSeleccionado;
-
-    private void cargarImagen() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("Archivos de Imagen", "*.png", "*.jpg", "*.gif")
-        );
-        File file = fileChooser.showOpenDialog(this); // Abrir diálogo para seleccionar imagen
-
-        if (file != null) {
-            String rutaImagen = file.getAbsolutePath(); // Obtener la ruta completa
-            if (albumSeleccionado != null) { // Verifica que un álbum esté seleccionado
-                albumSeleccionado.setFoto(rutaImagen); // Almacenar la ruta en el álbum
-                albumSeleccionado.UPDATE(); // Actualizar la base de datos
-
-                // Refrescar la tabla para mostrar el álbum con la nueva imagen
-                tbvAlbum.setItems(new AlbumDAO().SELECTALL());
-            } else {
-                System.out.println("No se ha seleccionado ningún álbum.");
-            }
-        } else {
-            System.out.println("No se seleccionó ninguna imagen.");
-        }
-    }
-
-
 
     private void CrearTable() {
         AlbumDAO objAlbum = new AlbumDAO();
         tbvAlbum = new TableView<>();
-        tbvAlbum.getStyleClass().add("table");
-
+        tbvAlbum.getStyleClass().add("table");  // Aplica estilo de tabla
 
         TableColumn<AlbumDAO, String> tbcBanda = new TableColumn<>("Banda");
         tbcBanda.setCellValueFactory(new PropertyValueFactory<>("banda"));
@@ -85,57 +53,46 @@ public class ListaAlbum extends Stage {
         TableColumn<AlbumDAO, String> tbcAño = new TableColumn<>("Año de Salida");
         tbcAño.setCellValueFactory(new PropertyValueFactory<>("añoSalida"));
 
-        TableColumn<AlbumDAO, String> tbcImagen = new TableColumn<>("Imagen");
-        tbcImagen.setCellValueFactory(new PropertyValueFactory<>("foto"));
-        tbcImagen.setCellFactory(col -> new TableCell<AlbumDAO, String>() {
+        TableColumn<AlbumDAO, byte[]> tbcImagen = new TableColumn<>("Imagen");
+        tbcImagen.setCellValueFactory(new PropertyValueFactory<>("imagen"));
+
+        tbcImagen.setCellFactory(col -> new TableCell<>() {
             private final ImageView imageView = new ImageView();
+
             @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
+            protected void updateItem(byte[] imageData, boolean empty) {
+                super.updateItem(imageData, empty);
+                if (empty || imageData == null) {
                     setGraphic(null);
                 } else {
-                    try {
-                        Image image = new Image(new File(item).toURI().toString()); // Cargar imagen desde la ruta correcta
-                        imageView.setImage(image);
-                    } catch (Exception e) {
-                        System.out.println("Error al cargar la imagen: " + e.getMessage());
-                        imageView.setImage(null); // En caso de error, dejar la imagen vacía.
-                    }
-                    imageView.setFitHeight(50);
-                    imageView.setFitWidth(50);
+                    Image img = new Image(new ByteArrayInputStream(imageData));
+                    imageView.setImage(img);
+                    imageView.setFitHeight(100);
+                    imageView.setFitWidth(100);
                     setGraphic(imageView);
                 }
-
             }
         });
 
-        // Column for the Edit button
         TableColumn<AlbumDAO, String> tbcEditar = new TableColumn<>("Editar");
         tbcEditar.setCellFactory(col -> new ButtonCell<>(
                 "Editar",
-                album -> {
-                    albumSeleccionado = album; // Guardar el álbum seleccionado
-                    new FormAlbum(tbvAlbum, album); // Abrir formulario de edición
-                },
-                null // No hay acción de eliminar aquí
+                album -> new FormAlbum(tbvAlbum, album),
+                null
         ));
 
-
-        // Column for the Delete button
         TableColumn<AlbumDAO, String> tbcEliminar = new TableColumn<>("Eliminar");
         tbcEliminar.setCellFactory(col -> new ButtonCell<>(
                 "Eliminar",
-                null, // No edit action in the delete column
+                null,
                 album -> {
-                    album.DELETE();  // Delete action
+                    album.DELETE();
                     tbvAlbum.setItems(album.SELECTALL());
                 }
         ));
 
-        tbvAlbum.getColumns().addAll(tbcBanda, tbcNombre, tbcAño,tbcImagen, tbcEditar, tbcEliminar);
+        tbvAlbum.getColumns().addAll(tbcBanda, tbcNombre, tbcAño, tbcImagen, tbcEditar, tbcEliminar);
         tbvAlbum.setItems(objAlbum.SELECTALL());
     }
 
 }
-

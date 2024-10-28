@@ -13,7 +13,7 @@ public class FormCancion extends Stage {
     private Scene scene;
     private TextField txtNombre;
     private TextField txtCostoCancion;
-    private ComboBox<GeneroDAO> comboGenero;  // ComboBox para seleccionar el género
+    private ComboBox<GeneroDAO> comboGenero;
     private Button btnGuardar;
     private VBox vbox;
     private CancionDAO objCan;
@@ -48,7 +48,6 @@ public class FormCancion extends Stage {
         txtCostoCancion = new TextField();
         txtCostoCancion.setPromptText("Costo de la canción");
 
-        // Crear ComboBox para géneros y cargarlo con los géneros disponibles
         comboGenero = new ComboBox<>();
         comboGenero.setItems(FXCollections.observableArrayList(new GeneroDAO().SELECTALL()));
         comboGenero.setPromptText("Seleccione un género");
@@ -56,21 +55,20 @@ public class FormCancion extends Stage {
         btnGuardar = new Button("Guardar");
         btnGuardar.setOnAction(actionEvent -> GuardarCancion());
 
-        vbox = new VBox(txtNombre, txtCostoCancion, comboGenero, btnGuardar);  // Agregar ComboBox a la vista
+        vbox = new VBox(txtNombre, txtCostoCancion, comboGenero, btnGuardar);
         vbox.setPadding(new Insets(10));
         vbox.setSpacing(10);
 
-        scene = new Scene(vbox, 300, 200);  // Aumentar tamaño de la ventana para acomodar el ComboBox
+        scene = new Scene(vbox, 300, 200);
     }
 
     private void GuardarCancion() {
         objCan.setNombre(txtNombre.getText());
         objCan.setCostoCancion(Float.parseFloat(txtCostoCancion.getText()));
 
-        // Asignar el género seleccionado a la canción
         GeneroDAO generoSeleccionado = comboGenero.getSelectionModel().getSelectedItem();
         if (generoSeleccionado != null) {
-            objCan.setGeneroID(generoSeleccionado.getTipoGenero());  // Almacena Tipo_Genero como String
+            objCan.setGeneroID(generoSeleccionado.getTipoGenero());
         }
 
         String msj;
@@ -100,4 +98,3 @@ public class FormCancion extends Stage {
     }
 
 }
-

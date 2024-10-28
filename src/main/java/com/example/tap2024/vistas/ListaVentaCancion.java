@@ -21,7 +21,6 @@ public class ListaVentaCancion extends Stage {
     private VBox vbox;
     private Scene escena;
 
-    // Declarar columnas de editar y eliminar como atributos de clase
     private TableColumn<VentaCancionDAO, String> tbcEditar;
     private TableColumn<VentaCancionDAO, String> tbcEliminar;
 
@@ -50,6 +49,8 @@ public class ListaVentaCancion extends Stage {
         vbox = new VBox(10, cbVenta, cbCancion, btnGenerarRelacion, tbvVentaCancion);
         vbox.setPadding(new Insets(10));
         escena = new Scene(vbox, 600, 400);
+        escena.getStylesheets().add(getClass().getResource("/styles/Listas.CSS").toExternalForm());
+
     }
 
     private void CrearTable() {
@@ -64,7 +65,6 @@ public class ListaVentaCancion extends Stage {
         TableColumn<VentaCancionDAO, String> colDescripcion = new TableColumn<>("Descripcion");
         colDescripcion.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getDescripcion()));
 
-        // Inicializar columnas de botones aquí
         tbcEditar = new TableColumn<>("Editar");
         tbcEditar.setCellFactory(col -> new ButtonCell<>(
                 "Editar",
@@ -99,4 +99,3 @@ public class ListaVentaCancion extends Stage {
         form.show();
     }
 }
-

@@ -10,11 +10,11 @@ public class CancionDAO {
     private int idCancion;
     private String nombre;
     private float costoCancion;
-    private String tipoGenero;  // Referencia a Tipo_Genero en GeneroDAO
+    private String generoID;
 
     public GeneroDAO getGenero() {
         GeneroDAO genero = new GeneroDAO();
-        genero.setTipoGenero(this.tipoGenero);
+        genero.setTipoGenero(this.generoID);
         return genero;
     }
     @Override
@@ -47,11 +47,11 @@ public class CancionDAO {
     }
 
     public String getGeneroID() {
-        return tipoGenero;
+        return generoID;
     }
 
     public void setGeneroID(String generoID) {
-        this.tipoGenero = generoID;
+        this.generoID = generoID;
     }
 
     public boolean esNuevo() {
@@ -61,7 +61,7 @@ public class CancionDAO {
     public int INSERT() {
         int rowCount;
         String query = "INSERT INTO tblCancion(NomCancion, costoCancion, GeneroID) " +
-                "VALUES('" + this.nombre + "', " + this.costoCancion + ", '" + this.tipoGenero + "')";
+                "VALUES('" + this.nombre + "', " + this.costoCancion + ", '" + this.generoID + "')";
         try {
             Statement stmt = Conexion.conexion.createStatement();
             rowCount = stmt.executeUpdate(query);
@@ -74,7 +74,7 @@ public class CancionDAO {
 
     public void UPDATE() {
         String query = "UPDATE tblCancion SET NomCancion = '" + this.nombre + "', costoCancion = " + this.costoCancion +
-                ", GeneroID = '" + this.tipoGenero + "' WHERE ID_Cancion = " + this.idCancion;
+                ", GeneroID = '" + this.generoID + "' WHERE ID_Cancion = " + this.idCancion;
         try {
             Statement stmt = Conexion.conexion.createStatement();
             stmt.executeUpdate(query);
@@ -105,7 +105,7 @@ public class CancionDAO {
                 cancion.setIdCancion(rs.getInt("ID_Cancion"));
                 cancion.setNombre(rs.getString("NomCancion"));
                 cancion.setCostoCancion(rs.getFloat("costoCancion"));
-                cancion.setGeneroID(rs.getString("GeneroID"));  // Almacena el Tipo_Genero
+                cancion.setGeneroID(rs.getString("GeneroID"));
                 listaCanciones.add(cancion);
             }
         } catch (SQLException e) {
@@ -117,4 +117,3 @@ public class CancionDAO {
 
 
 }
-

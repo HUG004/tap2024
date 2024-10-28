@@ -10,7 +10,7 @@ import java.sql.Statement;
 public class VentaDAO {
     private int idVenta;
     private float precio;
-    private int idCliente;  // Foreign key from ClienteDAO
+    private int idCliente;
 
     public int getIdVenta() {
         return idVenta;
@@ -36,7 +36,6 @@ public class VentaDAO {
         this.idCliente = idCliente;
     }
 
-    // Insert a new sale into the database
     public int INSERT() {
         int rowCount;
         String query = "INSERT INTO tblventa (precio, idCliente) VALUES (" + this.precio + "," + this.idCliente + ")";
@@ -50,7 +49,6 @@ public class VentaDAO {
         return rowCount;
     }
 
-    // Retrieve all sales from the database
     public ObservableList<VentaDAO> SELECTALL() {
         ObservableList<VentaDAO> listaVentas = FXCollections.observableArrayList();
         String query = "SELECT * FROM tblventas";

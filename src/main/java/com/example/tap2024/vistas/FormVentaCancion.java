@@ -24,18 +24,16 @@ public class FormVentaCancion extends Stage {
     public FormVentaCancion(TableView<VentaCancionDAO> tbv, VentaCancionDAO objVC) {
         this.tbvVentaCancion = tbv;
         this.objVentaCancion = objVC != null ? objVC : new VentaCancionDAO();
-        this.esNuevo = objVC == null; // Si objVC es null, es un nuevo registro
+        this.esNuevo = objVC == null;
         CrearUI();
 
         if (objVC != null) {
             objVentaCancion.setIdVentaOriginal(objVC.getIdVenta());
             objVentaCancion.setIdCancionOriginal(objVC.getIdCancion());
 
-            // Seleccionar la venta con base en el idVenta
             VentaDAO ventaSeleccionada = buscarVentaPorId(objVC.getIdVenta());
             cmbVenta.getSelectionModel().select(ventaSeleccionada);
 
-            // Seleccionar la canción con base en el idCancion
             CancionDAO cancionSeleccionada = buscarCancionPorId(objVC.getIdCancion());
             cmbCancion.getSelectionModel().select(cancionSeleccionada);
 
@@ -80,13 +78,13 @@ public class FormVentaCancion extends Stage {
             objVentaCancion.setDescripcion(txtDescripcion.getText());
 
             String mensaje;
-            if (esNuevo) {  // Si es un nuevo registro
+            if (esNuevo) {
                 if (objVentaCancion.INSERT() > 0) {
                     mensaje = "Relación agregada correctamente";
                 } else {
                     mensaje = "Error al agregar la relación";
                 }
-            } else {  // Editar registro existente
+            } else {
                 objVentaCancion.UPDATE();
                 mensaje = "Relación actualizada correctamente";
             }

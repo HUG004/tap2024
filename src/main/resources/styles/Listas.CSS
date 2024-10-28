@@ -1,0 +1,35 @@
+/* estilos.css */
+
+/* Estilo base para todas las ventanas (root) */
+.root {
+    -fx-background-color: #f3f4f6;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Estilo general para las tablas (TableView) */
+.table {
+    -fx-font-size: 14px;
+    -fx-background-color: white;
+    -fx-border-color: #d1d5db;
+    -fx-border-width: 1px;
+}
+
+/* Estilo de las cabeceras de columnas */
+.table .column-header {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* Estilo para botones en general */
+.button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 5px;
+}
+
+/* Efecto hover para los botones */
+.button:hover {
+    -fx-background-color: #45a049;
+}

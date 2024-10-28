@@ -13,7 +13,7 @@ public class ArtistaDAO {
 
     @Override
     public String toString() {
-        return this.getNomArt();  // Retorna el nombre del artista
+        return this.getNomArt();
     }
 
     public int getIdArt() {
@@ -37,7 +37,6 @@ public class ArtistaDAO {
         this.cancion = cancion;
     }
 
-    // Método para insertar un nuevo artista
     public int INSERT() {
         int rowCount;
         String query = "INSERT INTO tblArtista(nomArt, cancion) " +
@@ -52,7 +51,6 @@ public class ArtistaDAO {
         return rowCount;
     }
 
-    // Método para actualizar los datos de un artista existente
     public void UPDATE() {
         String query = "UPDATE tblArtista SET nomArt = '" + this.nomArt + "', cancion = '" + this.cancion + "' " +
                 "WHERE idArt = " + this.idArt;
@@ -64,7 +62,6 @@ public class ArtistaDAO {
         }
     }
 
-    // Método para eliminar un artista por su ID
     public void DELETE() {
         String query = "DELETE FROM tblArtista WHERE idArt = " + this.idArt;
         try {
@@ -75,7 +72,6 @@ public class ArtistaDAO {
         }
     }
 
-    // Método para seleccionar todos los artistas de la base de datos
     public ObservableList<ArtistaDAO> SELECTALL() {
         ArtistaDAO objArt;
         String query = "SELECT * FROM tblArtista";
@@ -97,4 +93,3 @@ public class ArtistaDAO {
         return listaArt;
     }
 }
-

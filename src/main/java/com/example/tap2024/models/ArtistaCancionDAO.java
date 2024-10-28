@@ -185,26 +185,25 @@ public class ArtistaCancionDAO {
     }
     public ArtistaDAO getArtista() {
         ArtistaDAO artista = new ArtistaDAO();
-        artista.setIdArt(this.idArtista);  // Establece el ID del álbum
+        artista.setIdArt(this.idArtista);
         ObservableList<ArtistaDAO> listaArtista = artista.SELECTALL();
         for (ArtistaDAO alb : listaArtista) {
             if (alb.getIdArt() == this.idArtista) {
                 return alb;
             }
         }
-        return artista; // O devolver null si no se encuentra el álbum
+        return artista;
     }
     public CancionDAO getCancion() {
         CancionDAO cancion = new CancionDAO();
-        cancion.setIdCancion(this.idCancion);  // Establece el ID de la canción
+        cancion.setIdCancion(this.idCancion);
         ObservableList<CancionDAO> listaCanciones = cancion.SELECTALL();
         for (CancionDAO can : listaCanciones) {
             if (can.getIdCancion() == this.idCancion) {
                 return can;
             }
         }
-        return cancion; // O devolver null si no se encuentra la canción
+        return cancion;
     }
 
 }
-

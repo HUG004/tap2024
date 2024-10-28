@@ -83,4 +83,3 @@ public class FormGenero extends Stage {
         tbvGenero.refresh();
     }
 }
-

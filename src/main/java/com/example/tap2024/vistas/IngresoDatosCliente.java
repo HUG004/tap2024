@@ -38,10 +38,9 @@ public class IngresoDatosCliente extends Stage {
         ClienteDAO cliente = buscarCliente(txtNombre.getText(), txtCorreo.getText());
 
         if (cliente != null) {
-            new ViewCliente(); // Abre la interfaz para clientes si existe
+            new ViewCliente();
             this.close();
         } else {
-            // Mostrar alerta si el cliente no se encuentra
             Alert alerta = new Alert(Alert.AlertType.ERROR);
             alerta.setTitle("Cliente no encontrado");
             alerta.setContentText("No se encontró el cliente. Intenta de nuevo.");
@@ -50,15 +49,14 @@ public class IngresoDatosCliente extends Stage {
     }
 
     private ClienteDAO buscarCliente(String nombre, String correo) {
-        // Crear un nuevo objeto ClienteDAO y buscar en la base de datos
         ClienteDAO clienteDAO = new ClienteDAO();
         ObservableList<ClienteDAO> listaClientes = clienteDAO.SELECTALL();
 
         for (ClienteDAO cliente : listaClientes) {
             if (cliente.getNomClt().equalsIgnoreCase(nombre) && cliente.getEmailClt().equalsIgnoreCase(correo)) {
-                return cliente; // Retorna el cliente si se encuentra
+                return cliente;
             }
         }
-        return null; // Retorna null si no se encuentra
+        return null;
     }
 }

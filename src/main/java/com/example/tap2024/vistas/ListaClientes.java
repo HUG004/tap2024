@@ -34,11 +34,13 @@ public class ListaClientes extends Stage {
         CrearTable();
         vBox = new VBox(tlbMenu,tbvClientes);
         escena = new Scene(vBox,500,250);
+        escena.getStylesheets().add(getClass().getResource("/styles/Listas.CSS").toExternalForm());
     }
 
     private void CrearTable() {
         ClienteDAO objClt = new ClienteDAO();
         tbvClientes = new TableView<>();
+        tbvClientes.getStyleClass().add("table");
 
         TableColumn<ClienteDAO, String> tbcNom = new TableColumn<>("Nombre");
         tbcNom.setCellValueFactory(new PropertyValueFactory<>("nomClt"));
@@ -52,9 +54,9 @@ public class ListaClientes extends Stage {
         TableColumn<ClienteDAO, String> tbcEditar = new TableColumn<>("Editar");
         tbcEditar.setCellFactory(col -> new ButtonCell<>(
                 "Editar",
-                cliente -> new FormCliente(tbvClientes, cliente),  // Acción de edición
+                cliente -> new FormCliente(tbvClientes, cliente),
                 cliente -> {
-                    cliente.DELETE();  // Acción de eliminación
+                    cliente.DELETE();
                     tbvClientes.setItems(cliente.SELECTALL());
                 }
         ));
@@ -62,9 +64,9 @@ public class ListaClientes extends Stage {
         TableColumn<ClienteDAO, String> tbcEliminar = new TableColumn<>("Eliminar");
         tbcEliminar.setCellFactory(col -> new ButtonCell<>(
                 "Eliminar",
-                cliente -> new FormCliente(tbvClientes, cliente),  // Reusar acción de edición si quieres
+                cliente -> new FormCliente(tbvClientes, cliente),
                 cliente -> {
-                    cliente.DELETE();  // Acción de eliminación
+                    cliente.DELETE();
                     tbvClientes.setItems(cliente.SELECTALL());
                 }
         ));

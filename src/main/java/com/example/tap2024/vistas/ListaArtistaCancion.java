@@ -22,7 +22,6 @@ public class ListaArtistaCancion extends Stage {
     private VBox vbox;
     private Scene escena;
 
-    // Declarar columnas de editar y eliminar como atributos de clase
     private TableColumn<ArtistaCancionDAO, String> tbcEditar;
     private TableColumn<ArtistaCancionDAO, String> tbcEliminar;
 
@@ -45,15 +44,19 @@ public class ListaArtistaCancion extends Stage {
         cbCanciones.setPromptText("Seleccione una Canción");
 
         btnFiltrarPorArtista = new Button("Filtrar por Artista");
+        btnFiltrarPorArtista.getStyleClass().add("button");
         btnFiltrarPorArtista.setOnAction(e -> FiltrarPorArtista());
 
         btnFiltrarPorCancion = new Button("Filtrar por Canción");
+        btnFiltrarPorCancion.getStyleClass().add("button");
         btnFiltrarPorCancion.setOnAction(e -> FiltrarPorCancion());
 
         btnVerTodos = new Button("Ver Todos");
+        btnVerTodos.getStyleClass().add("button");
         btnVerTodos.setOnAction(e -> VerTodos());
 
         btnAgregarRelacion = new Button("Agregar Relación");
+        btnAgregarRelacion.getStyleClass().add("button");
         btnAgregarRelacion.setOnAction(e -> AbrirFormulario());
 
         CrearTable();
@@ -61,10 +64,12 @@ public class ListaArtistaCancion extends Stage {
         vbox = new VBox(10, cbArtistas, cbCanciones, btnFiltrarPorArtista, btnFiltrarPorCancion, btnVerTodos, btnAgregarRelacion, tbvArtistaCancion);
         vbox.setPadding(new Insets(10));
         escena = new Scene(vbox, 600, 400);
+        escena.getStylesheets().add(getClass().getResource("/styles/Listas.CSS").toExternalForm());
     }
 
     private void CrearTable() {
         tbvArtistaCancion = new TableView<>();
+        tbvArtistaCancion.getStyleClass().add("table");
 
         TableColumn<ArtistaCancionDAO, String> colArtista = new TableColumn<>("Artista");
         colArtista.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getNombreArtista()));
@@ -75,7 +80,6 @@ public class ListaArtistaCancion extends Stage {
         TableColumn<ArtistaCancionDAO, String> colInterpretado = new TableColumn<>("Interpretado");
         colInterpretado.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getInterpretado()));
 
-        // Inicializar columnas de editar y eliminar aquí
         tbcEditar = new TableColumn<>("Editar");
         tbcEditar.setCellFactory(col -> new ButtonCell<>(
                 "Editar",
@@ -110,7 +114,7 @@ public class ListaArtistaCancion extends Stage {
             ArtistaCancionDAO objRelaciones = new ArtistaCancionDAO();
             ObservableList<ArtistaCancionDAO> listaRelaciones = objRelaciones.Select_By_Artista(cbArtistas.getValue().getIdArt());
             tbvArtistaCancion.setItems(listaRelaciones);
-            tbvArtistaCancion.getColumns().removeAll(tbcEditar, tbcEliminar); // Ocultar columnas de botones
+            tbvArtistaCancion.getColumns().removeAll(tbcEditar, tbcEliminar);
         }
     }
 
@@ -119,7 +123,7 @@ public class ListaArtistaCancion extends Stage {
             ArtistaCancionDAO objRelaciones = new ArtistaCancionDAO();
             ObservableList<ArtistaCancionDAO> listaRelaciones = objRelaciones.Select_By_Cancion(cbCanciones.getValue().getIdCancion());
             tbvArtistaCancion.setItems(listaRelaciones);
-            tbvArtistaCancion.getColumns().removeAll(tbcEditar, tbcEliminar); // Ocultar columnas de botones
+            tbvArtistaCancion.getColumns().removeAll(tbcEditar, tbcEliminar);
         }
     }
 
@@ -127,10 +131,10 @@ public class ListaArtistaCancion extends Stage {
         ArtistaCancionDAO objRelaciones = new ArtistaCancionDAO();
         tbvArtistaCancion.setItems(objRelaciones.SELECTALL());
         if (!tbvArtistaCancion.getColumns().contains(tbcEditar)) {
-            tbvArtistaCancion.getColumns().add(tbcEditar); // Mostrar columna de editar
+            tbvArtistaCancion.getColumns().add(tbcEditar);
         }
         if (!tbvArtistaCancion.getColumns().contains(tbcEliminar)) {
-            tbvArtistaCancion.getColumns().add(tbcEliminar); // Mostrar columna de eliminar
+            tbvArtistaCancion.getColumns().add(tbcEliminar);
         }
     }
 }

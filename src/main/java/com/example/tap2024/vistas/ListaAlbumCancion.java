@@ -45,25 +45,31 @@ public class ListaAlbumCancion extends Stage {
         cbCancion.setPromptText("Seleccione un Cancion");
 
         btnFiltroAlbum = new Button("Filtrar por Album");
+        btnFiltroAlbum.getStyleClass().add("button");  // Aplicar CSS
         btnFiltroAlbum.setOnAction(e -> FiltrarPorAlbum());
 
         btnFiltroCancion = new Button("Filtrar por Cancion");
+        btnFiltroCancion.getStyleClass().add("button");  // Aplicar  CSS
         btnFiltroCancion.setOnAction(e -> FiltrarPorCancion());
 
         btnTodos = new Button("Ver todos");
+        btnTodos.getStyleClass().add("button");  // Aplicar  CSS
         btnTodos.setOnAction(e -> VerTodos());
 
         btnAgregar = new Button("Agregar relacion");
+        btnAgregar.getStyleClass().add("button");  // Aplicar estilo CSS
         btnAgregar.setOnAction(e -> AbrirForm());
 
         CrearTable();
         vbox = new VBox(10, cbAlbum, cbCancion, btnFiltroAlbum, btnFiltroCancion, btnTodos, btnAgregar, tbvCancionAlbum);
         vbox.setPadding(new Insets(10));
         escena = new Scene(vbox, 600, 400);
+        escena.getStylesheets().add(getClass().getResource("/styles/Listas.CSS").toExternalForm());
     }
 
     private void CrearTable() {
         tbvCancionAlbum = new TableView<>();
+        tbvCancionAlbum.getStyleClass().add("table");
 
         TableColumn<CancionAlbumDAO, String> colAlbum = new TableColumn<>("Album");
         colAlbum.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getNombreAlbum()));
@@ -74,7 +80,6 @@ public class ListaAlbumCancion extends Stage {
         TableColumn<CancionAlbumDAO, String> colDescrip = new TableColumn<>("Descripcion");
         colDescrip.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getDescripcion()));
 
-        // Inicializar columnas de botones aquí
         tbcEditar = new TableColumn<>("Editar");
         tbcEditar.setCellFactory(col -> new ButtonCell<>(
                 "Editar",
@@ -104,7 +109,7 @@ public class ListaAlbumCancion extends Stage {
             CancionAlbumDAO objRelaciones = new CancionAlbumDAO();
             ObservableList<CancionAlbumDAO> RelacionesLista = objRelaciones.SELECT_BY_ALBUM(cbAlbum.getValue().getIdAlbum());
             tbvCancionAlbum.setItems(RelacionesLista);
-            tbvCancionAlbum.getColumns().removeAll(tbcEditar, tbcEliminar); // Oculta las columnas de botones
+            tbvCancionAlbum.getColumns().removeAll(tbcEditar, tbcEliminar);
         }
     }
 
@@ -113,7 +118,7 @@ public class ListaAlbumCancion extends Stage {
             CancionAlbumDAO objRelaciones = new CancionAlbumDAO();
             ObservableList<CancionAlbumDAO> RelacionesLista = objRelaciones.SELECT_BY_CANCION(cbCancion.getValue().getIdCancion());
             tbvCancionAlbum.setItems(RelacionesLista);
-            tbvCancionAlbum.getColumns().removeAll(tbcEditar, tbcEliminar); // Oculta las columnas de botones
+            tbvCancionAlbum.getColumns().removeAll(tbcEditar, tbcEliminar);
         }
     }
 
@@ -121,10 +126,10 @@ public class ListaAlbumCancion extends Stage {
         CancionAlbumDAO objRelaciones = new CancionAlbumDAO();
         tbvCancionAlbum.setItems(objRelaciones.SELECTALL());
         if (!tbvCancionAlbum.getColumns().contains(tbcEditar)) {
-            tbvCancionAlbum.getColumns().add(tbcEditar); // Muestra las columnas de botones
+            tbvCancionAlbum.getColumns().add(tbcEditar);
         }
         if (!tbvCancionAlbum.getColumns().contains(tbcEliminar)) {
-            tbvCancionAlbum.getColumns().add(tbcEliminar); // Muestra las columnas de botones
+            tbvCancionAlbum.getColumns().add(tbcEliminar);
         }
     }
 

@@ -28,17 +28,20 @@ public class ListaArt extends Stage {
     private void CrearUI() {
         tlbMenu = new ToolBar();
         Button btnAddArt = new Button("Agregar Artista");
+        btnAddArt.getStyleClass().add("button");  // Aplica estilo de botón
         btnAddArt.setOnAction(actionEvent -> new FormArt(tbvArtistas, null));
         tlbMenu.getItems().add(btnAddArt);
 
         CrearTable();
         vBox = new VBox(tlbMenu, tbvArtistas);
         escena = new Scene(vBox, 500, 250);
+        escena.getStylesheets().add(getClass().getResource("/styles/Listas.CSS").toExternalForm());
     }
 
     private void CrearTable() {
         ArtistaDAO objArt = new ArtistaDAO();
         tbvArtistas = new TableView<>();
+        tbvArtistas.getStyleClass().add("table");
 
         TableColumn<ArtistaDAO, String> tbcNom = new TableColumn<>("Nombre");
         tbcNom.setCellValueFactory(new PropertyValueFactory<>("nomArt"));
@@ -49,9 +52,9 @@ public class ListaArt extends Stage {
         TableColumn<ArtistaDAO, String> tbcEditar = new TableColumn<>("Editar");
         tbcEditar.setCellFactory(col -> new ButtonCell<>(
                 "Editar",
-                artista -> new FormArt(tbvArtistas, artista),  // Acción de edición
+                artista -> new FormArt(tbvArtistas, artista),
                 artista -> {
-                    artista.DELETE();  // Acción de eliminación
+                    artista.DELETE();
                     tbvArtistas.setItems(artista.SELECTALL());
                 }
         ));
@@ -59,9 +62,9 @@ public class ListaArt extends Stage {
         TableColumn<ArtistaDAO, String> tbcEliminar = new TableColumn<>("Eliminar");
         tbcEliminar.setCellFactory(col -> new ButtonCell<>(
                 "Eliminar",
-                artista -> new FormArt(tbvArtistas, artista),  // Acción de edición
+                artista -> new FormArt(tbvArtistas, artista),
                 artista -> {
-                    artista.DELETE();  // Acción de eliminación
+                    artista.DELETE();
                     tbvArtistas.setItems(artista.SELECTALL());
                 }
         ));
@@ -70,4 +73,3 @@ public class ListaArt extends Stage {
         tbvArtistas.setItems(objArt.SELECTALL());
     }
 }
-

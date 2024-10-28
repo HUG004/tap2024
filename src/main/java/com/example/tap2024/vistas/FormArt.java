@@ -80,4 +80,3 @@ public class FormArt extends Stage {
         tbvArtista.refresh();
     }
 }
-

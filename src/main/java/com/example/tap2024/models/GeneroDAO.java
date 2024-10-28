@@ -7,12 +7,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class GeneroDAO {
-    private String tipoGenero;  // Clave primaria
+    private String tipoGenero;
     private String descripcion;
 
     @Override
     public String toString() {
-        return this.tipoGenero;  // O el campo que quieras mostrar en el ComboBox
+        return this.tipoGenero;
     }
 
     public String getTipoGenero() {

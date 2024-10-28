@@ -25,12 +25,14 @@ public class ListaCancion extends Stage {
     private void CrearUI() {
         tlbMenu = new ToolBar();
         Button btnAddCancion = new Button("Agregar Canción");
+        btnAddCancion.getStyleClass().add("button");
         btnAddCancion.setOnAction(actionEvent -> new FormCancion(tbvCanciones, null));
         tlbMenu.getItems().add(btnAddCancion);
 
         CrearTable();
         vBox = new VBox(tlbMenu, tbvCanciones);
-        escena = new Scene(vBox, 600, 300);  // Ajustar tamaño para la nueva columna
+        escena = new Scene(vBox, 600, 300);
+        escena.getStylesheets().add(getClass().getResource("/styles/Listas.CSS").toExternalForm());
     }
 
     private void CrearTable() {
@@ -43,7 +45,6 @@ public class ListaCancion extends Stage {
         TableColumn<CancionDAO, Float> tbcCosto = new TableColumn<>("Costo Canción");
         tbcCosto.setCellValueFactory(new PropertyValueFactory<>("costoCancion"));
 
-        // Columna para mostrar el género de la canción
         TableColumn<CancionDAO, String> tbcGenero = new TableColumn<>("Género");
         tbcGenero.setCellValueFactory(cellData -> {
             CancionDAO cancion = cellData.getValue();
@@ -60,10 +61,8 @@ public class ListaCancion extends Stage {
                 }
         ));
 
-        // Agregar todas las columnas incluyendo la del género
         tbvCanciones.getColumns().addAll(tbcNombre, tbcCosto, tbcGenero, tbcEditar);
         tbvCanciones.setItems(objCan.SELECTALL());
     }
 
 }
-

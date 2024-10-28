@@ -26,6 +26,8 @@ public class ListaVentas extends Stage {
         CrearTable();
         vBox = new VBox(tbvVentas);
         escena = new Scene(vBox, 500, 250);
+        escena.getStylesheets().add(getClass().getResource("/styles/Listas.CSS").toExternalForm());
+
     }
 
     private void CrearTable() {
