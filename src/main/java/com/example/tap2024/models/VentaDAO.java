@@ -3,15 +3,15 @@ package com.example.tap2024.models;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class VentaDAO {
     private int idVenta;
     private float precio;
     private int idCliente;
+    private String nombreCliente;
 
+    // Getters y Setters
     public int getIdVenta() {
         return idVenta;
     }
@@ -36,9 +36,18 @@ public class VentaDAO {
         this.idCliente = idCliente;
     }
 
+    public String getNombreCliente() {
+        return nombreCliente;
+    }
+
+    public void setNombreCliente(String nombreCliente) {
+        this.nombreCliente = nombreCliente;
+    }
+
+
     public int INSERT() {
         int rowCount;
-        String query = "INSERT INTO tblventa (precio, idCliente) VALUES (" + this.precio + "," + this.idCliente + ")";
+        String query = "INSERT INTO tblVentas (Precio, idClt) VALUES (" + this.precio + ", " + this.idCliente + ")";
         try {
             Statement stmt = Conexion.conexion.createStatement();
             rowCount = stmt.executeUpdate(query);
@@ -49,17 +58,24 @@ public class VentaDAO {
         return rowCount;
     }
 
+
     public ObservableList<VentaDAO> SELECTALL() {
         ObservableList<VentaDAO> listaVentas = FXCollections.observableArrayList();
-        String query = "SELECT * FROM tblventas";
+        String query = """
+        SELECT v.ID_Venta, v.Precio, v.idClt, c.nomClt AS Nombre
+        FROM tblVentas v
+        JOIN tblcliente c ON v.idClt = c.idClt
+    """;
+
         try {
             Statement stmt = Conexion.conexion.createStatement();
             ResultSet res = stmt.executeQuery(query);
             while (res.next()) {
                 VentaDAO venta = new VentaDAO();
-                venta.setIdVenta(res.getInt("idVenta"));
-                venta.setPrecio(res.getFloat("precio"));
-                venta.setIdCliente(res.getInt("idCliente"));
+                venta.setIdVenta(res.getInt("ID_Venta"));
+                venta.setPrecio(res.getFloat("Precio"));
+                venta.setIdCliente(res.getInt("idClt"));
+                venta.setNombreCliente(res.getString("Nombre"));
                 listaVentas.add(venta);
             }
         } catch (SQLException e) {
@@ -67,5 +83,21 @@ public class VentaDAO {
         }
         return listaVentas;
     }
+
+
+
+    public int UPDATE() {
+        int rowCount = 0;
+        String query = "UPDATE tblVentas SET Precio = " + this.precio + " WHERE ID_Venta = " + this.idVenta;
+        try {
+            Statement stmt = Conexion.conexion.createStatement();
+            rowCount = stmt.executeUpdate(query);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rowCount;
+    }
+
+
 
 }

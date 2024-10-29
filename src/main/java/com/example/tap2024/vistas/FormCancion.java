@@ -68,7 +68,7 @@ public class FormCancion extends Stage {
 
         GeneroDAO generoSeleccionado = comboGenero.getSelectionModel().getSelectedItem();
         if (generoSeleccionado != null) {
-            objCan.setGeneroID(generoSeleccionado.getTipoGenero());
+            objCan.setTipoGenero(generoSeleccionado.getTipoGenero());
         }
 
         String msj;

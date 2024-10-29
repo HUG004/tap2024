@@ -48,7 +48,7 @@ public class ListaCancion extends Stage {
         TableColumn<CancionDAO, String> tbcGenero = new TableColumn<>("Género");
         tbcGenero.setCellValueFactory(cellData -> {
             CancionDAO cancion = cellData.getValue();
-            return cancion.getGeneroID() != null ? new SimpleStringProperty(cancion.getGeneroID()) : null;
+            return cancion.getTipoGenero() != null ? new SimpleStringProperty(cancion.getTipoGenero()) : null;
         });
 
         TableColumn<CancionDAO, String> tbcEditar = new TableColumn<>("Editar");

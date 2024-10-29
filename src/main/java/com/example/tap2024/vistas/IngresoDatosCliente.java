@@ -38,7 +38,7 @@ public class IngresoDatosCliente extends Stage {
         ClienteDAO cliente = buscarCliente(txtNombre.getText(), txtCorreo.getText());
 
         if (cliente != null) {
-            new ViewCliente();
+            new ViewCliente(cliente);  // Pasamos el cliente a la vista
             this.close();
         } else {
             Alert alerta = new Alert(Alert.AlertType.ERROR);

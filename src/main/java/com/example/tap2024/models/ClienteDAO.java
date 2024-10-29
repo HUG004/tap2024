@@ -2,11 +2,9 @@ package com.example.tap2024.models;
 
 import java.sql.SQLException;
 import java.sql.Statement;
-import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 
 public class ClienteDAO {
     private int idClt;
@@ -57,7 +55,6 @@ public class ClienteDAO {
     }
 
     public void UPDATE(){
-
         String query="UPDATE tblcliente SET nomClt = '"+this.nomClt+"', telClt = '"+this.telClt+"', " +
                 "emailClt = '"+this.emailClt+"' WHERE idClt = "+this.idClt;
         try {
@@ -96,9 +93,11 @@ public class ClienteDAO {
         }catch(Exception e){
             e.printStackTrace();
         }
-
         return listaC;
     }
 
-
+    @Override
+    public String toString() {
+        return String.valueOf(idClt);  // Mostrar el ID del cliente
+    }
 }

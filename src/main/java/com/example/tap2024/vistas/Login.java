@@ -1,7 +1,5 @@
 package com.example.tap2024.vistas;
 
-import com.example.tap2024.vistas.IngresoDatosCliente;
-import com.example.tap2024.vistas.Spotify;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
@@ -32,7 +30,6 @@ public class Login extends Stage {
         vbox = new VBox(15, lblMensaje, btnAdmin, btnCliente);
         escena = new Scene(vbox, 300, 200);
         escena.getStylesheets().add(getClass().getResource("/styles/Listas.CSS").toExternalForm());
-
     }
 
     private void abrirInterfazAdmin() {
@@ -41,7 +38,7 @@ public class Login extends Stage {
     }
 
     private void abrirInterfazCliente() {
-        new IngresoDatosCliente();
+        new IngresoDatosCliente(); // Inicia flujo para cliente
         this.close();
     }
 }

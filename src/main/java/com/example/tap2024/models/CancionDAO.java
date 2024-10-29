@@ -10,11 +10,11 @@ public class CancionDAO {
     private int idCancion;
     private String nombre;
     private float costoCancion;
-    private String generoID;
+    private String tipoGenero;
 
     public GeneroDAO getGenero() {
         GeneroDAO genero = new GeneroDAO();
-        genero.setTipoGenero(this.generoID);
+        genero.setTipoGenero(this.tipoGenero);
         return genero;
     }
     @Override
@@ -46,12 +46,12 @@ public class CancionDAO {
         this.costoCancion = costoCancion;
     }
 
-    public String getGeneroID() {
-        return generoID;
+    public String getTipoGenero() {
+        return tipoGenero;
     }
 
-    public void setGeneroID(String generoID) {
-        this.generoID = generoID;
+    public void setTipoGenero(String tipoGenero) {
+        this.tipoGenero = tipoGenero;
     }
 
     public boolean esNuevo() {
@@ -60,8 +60,8 @@ public class CancionDAO {
 
     public int INSERT() {
         int rowCount;
-        String query = "INSERT INTO tblCancion(NomCancion, costoCancion, GeneroID) " +
-                "VALUES('" + this.nombre + "', " + this.costoCancion + ", '" + this.generoID + "')";
+        String query = "INSERT INTO tblCancion(NomCancion, costoCancion, tipo_genero) " +
+                "VALUES('" + this.nombre + "', " + this.costoCancion + ", '" + this.tipoGenero + "')";
         try {
             Statement stmt = Conexion.conexion.createStatement();
             rowCount = stmt.executeUpdate(query);
@@ -74,7 +74,7 @@ public class CancionDAO {
 
     public void UPDATE() {
         String query = "UPDATE tblCancion SET NomCancion = '" + this.nombre + "', costoCancion = " + this.costoCancion +
-                ", GeneroID = '" + this.generoID + "' WHERE ID_Cancion = " + this.idCancion;
+                ", tipo_genero = '" + this.tipoGenero + "' WHERE ID_Cancion = " + this.idCancion;
         try {
             Statement stmt = Conexion.conexion.createStatement();
             stmt.executeUpdate(query);
@@ -105,7 +105,7 @@ public class CancionDAO {
                 cancion.setIdCancion(rs.getInt("ID_Cancion"));
                 cancion.setNombre(rs.getString("NomCancion"));
                 cancion.setCostoCancion(rs.getFloat("costoCancion"));
-                cancion.setGeneroID(rs.getString("GeneroID"));
+                cancion.setTipoGenero(rs.getString("tipo_genero"));
                 listaCanciones.add(cancion);
             }
         } catch (SQLException e) {
