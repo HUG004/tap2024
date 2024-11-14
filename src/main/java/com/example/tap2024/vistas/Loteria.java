@@ -4,6 +4,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -13,265 +14,251 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import org.kordamp.bootstrapfx.BootstrapFX;
-import org.kordamp.bootstrapfx.scene.layout.Panel;
 
+import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class Loteria extends Stage {
 
-    private HBox hBoxMain, hBoxButtons;
-    private VBox vBoxTablilla, vBoxMazo;
-    private Button btnAnt, btnSig, btnIni, btnFin;
-    private Label lbTimer;
-    private GridPane gdTab;
-    private ImageView imMazo;
+    private Timeline timeline;
+    private HBox hboxMain, hboxButtons;
+    private VBox vboxTablilla, vboxMazo;
+    private Button Anterior, Siguiente, Inic_Det;
     private Scene escena;
-    private String[] arrImages = {
-            "/images/l1.png", "/images/l2.png", "/images/l3.png", "/images/l4.png",
-            "/images/l5.png", "/images/l6.png", "/images/l7.png", "/images/l8.png",
-            "/images/l9.png", "/images/l10.png", "/images/l11.png", "/images/l12.png",
-            "/images/l13.png", "/images/l14.png", "/images/l15.png", "/images/l16.png",
-            "/images/l17.png", "/images/l18.png", "/images/l19.png", "/images/l20.png",
-            "/images/l21.png", "/images/l22.png", "/images/l23.png", "/images/l24.png",
-            "/images/l25.png", "/images/l26.png", "/images/l27.png", "/images/l28.png",
-            "/images/l29.png", "/images/l30.png", "/images/l31.png", "/images/l32.png",
-            "/images/l33.png", "/images/l34.png", "/images/l35.png", "/images/l36.png",
-            "/images/l37.png", "/images/l38.png", "/images/l39.png", "/images/l40.png",
-            "/images/l41.png", "/images/l42.png", "/images/l43.png", "/images/l44.png",
-            "/images/l45.png", "/images/l46.png", "/images/l47.png", "/images/l48.png",
-            "/images/l49.png", "/images/l50.png", "/images/l51.png", "/images/l52.png",
-            "/images/l53.png", "/images/l54.png"
-    };
-    private Button[][] arTab;
-    private Panel pnlMain;
-    private int currentTab = 0;
-    private boolean juegoActivo = false;
-    private Timeline timer; // Cambiado a variable de instancia
-    private int tiempoRestante; // Tiempo en segundos
+    private List<Integer> numerosDisponibles, Mazo;
+    private Button[][][] arBtnTab = new Button[5][4][4];
+    private Boolean[][][] Matriz_B = new Boolean[5][4][4];
+    private ImageView Baraja;
+    private Label Cont, G_P;
+    private GridPane gdpTabla;
+    private GridPane[] Lista_Tablas = new GridPane[5];
+    private int ind_Tabla = 0;
+    private List<Integer> cartasMostradas = new ArrayList<>();
+    private int[][][] numerosCartas = new int[5][4][4];
+
+    String path = "C:/Users/Usuario/IdeaProjects/tap2024/src/main/resources/images/";
 
     public Loteria() {
+        numImages();
         CrearUI();
-        this.setTitle("Lotería");
+        this.setTitle("Loteria Mexicana");
         this.setScene(escena);
         this.show();
     }
 
     private void CrearUI() {
-        ImageView imAnt = new ImageView(new Image(getClass().getResource("/images/last.png").toString()));
-        imAnt.setFitWidth(50);
-        imAnt.setFitHeight(50);
+        ImageView lastImgView = new ImageView(new Image(new File(path + "last.png").toURI().toString()));
+        lastImgView.setFitWidth(50);
+        lastImgView.setFitHeight(50);
 
-        ImageView imSig = new ImageView(new Image(getClass().getResource("/images/NEXT.png").toString()));
-        imSig.setFitWidth(50);
-        imSig.setFitHeight(50);
+        ImageView nextImgView = new ImageView(new Image(new File(path + "NEXT.png").toURI().toString()));
+        nextImgView.setFitWidth(50);
+        nextImgView.setFitHeight(50);
 
-        arTab = new Button[5][16]; // 5 tablillas, 4x4 buttons each
-        for (int k = 0; k < 5; k++) {
-            GridPane gdTabk = new GridPane();
-            CrearTablilla(gdTabk, k);
-            if (k == 0) {
-                gdTab = gdTabk;
+        for (int i = 0; i < 5; i++) {
+            Lista_Tablas[i] = new GridPane();
+            CrearTablilla(Lista_Tablas[i], i);
+        }
+
+        Cont = new Label("Contador");
+        Cont.setFont(new Font("Arial", 30));
+        Cont.setTextFill(Color.BLUE);
+        Baraja = new ImageView(new Image(new File(path + "dorso.png").toURI().toString()));
+        Baraja.setFitHeight(500);
+        Baraja.setFitWidth(400);
+        Inic_Det = new Button("Iniciar");
+        Inic_Det.getStyleClass().add("boton-iniciar");
+
+        vboxMazo = new VBox(Cont, Baraja);
+        vboxMazo.setAlignment(Pos.CENTER);
+
+        Anterior = new Button();
+        Anterior.setGraphic(lastImgView);
+        Siguiente = new Button();
+        Siguiente.setGraphic(nextImgView);
+        Siguiente.setOnAction(actionEvent -> nextTabla());
+        Anterior.setOnAction(actionEvent -> lastTabla());
+
+        Inic_Det.setOnAction(actionEvent -> alternarEstadoJuego());
+        hboxButtons = new HBox(Anterior, Siguiente, Inic_Det);
+        hboxButtons.setSpacing(50);
+
+        gdpTabla = Lista_Tablas[ind_Tabla];
+        vboxTablilla = new VBox(gdpTabla, hboxButtons);
+
+        hboxMain = new HBox(vboxTablilla, vboxMazo);
+        hboxMain.setSpacing(190);
+        hboxMain.setPadding(new Insets(20));
+        escena = new Scene(hboxMain, 1200, 700);
+        escena.getStylesheets().add(new File("C:\\Users\\Usuario\\IdeaProjects\\tap2024\\src\\main\\resources\\styles\\Loteria.CSS").toURI().toString());
+    }
+
+    private void CrearTablilla(GridPane listaTabla, int k) {
+        List<Integer> cartasTemporales = new ArrayList<>(numerosDisponibles);
+        Collections.shuffle(cartasTemporales);
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                Matriz_B[k][i][j] = false;
+                int numeroAleatorio = cartasTemporales.remove(0);
+                numerosCartas[k][i][j] = numeroAleatorio;
+
+                ImageView imv = new ImageView(new Image(new File(path + "l" + numeroAleatorio + ".png").toURI().toString()));
+                imv.setFitWidth(100);
+                imv.setFitHeight(130);
+                arBtnTab[k][i][j] = new Button();
+                arBtnTab[k][i][j].setGraphic(imv);
+                final int x = i;
+                final int y = j;
+                arBtnTab[k][i][j].setOnAction(actionEvent -> Marcar(k, x, y));
+                listaTabla.add(arBtnTab[k][i][j], j, i);
             }
         }
-
-        btnAnt = new Button();
-        btnAnt.setGraphic(imAnt);
-        btnAnt.setOnAction(e -> {
-            currentTab = (currentTab - 1 + 5) % 5;
-            actualizarTab();
-        });
-
-        btnSig = new Button();
-        btnSig.setGraphic(imSig);
-        btnSig.setOnAction(e -> {
-            currentTab = (currentTab + 1) % 5;
-            actualizarTab();
-        });
-
-        btnFin = new Button("Finalizar juego");
-        btnFin.setOnAction(e -> reiniciarJuego());
-
-        btnIni = new Button("Iniciar juego");
-        btnIni.getStyleClass().addAll("btn-sm", "btn-danger");
-        btnIni.setOnAction(e -> iniciarJuego());
-
-        hBoxButtons = new HBox(btnAnt, btnSig, btnFin, btnIni);
-        vBoxTablilla = new VBox(gdTab, hBoxButtons);
-
-        CrearMazo();
-
-        hBoxMain = new HBox(vBoxTablilla, vBoxMazo);
-        pnlMain = new Panel("Lotería Mexicana");
-        pnlMain.getStyleClass().add("panel-success");
-        pnlMain.setBody(hBoxMain);
-        hBoxMain.setSpacing(80);
-        hBoxMain.setPadding(new Insets(30));
-        escena = new Scene(pnlMain, 900, 800);
-        escena.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
-        escena.getStylesheets().add(getClass().getResource("/styles/Loteria.css").toString());
     }
 
-    private void CrearMazo() {
-        Image imgMazo = new Image(getClass().getResource("/images/dorso.png").toString());
-        lbTimer = new Label("00:00");
-        imMazo = new ImageView(imgMazo);
-        imMazo.setFitHeight(450);
-        imMazo.setFitWidth(300);
-        vBoxMazo = new VBox(lbTimer, imMazo);
+    private void Marcar(int tab_Ind, int x, int y) {
+        arBtnTab[tab_Ind][x][y].setStyle("-fx-background-color: green;");
+        Matriz_B[tab_Ind][x][y] = true;
     }
 
-    private void iniciarJuego() {
-        if (juegoActivo) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Juego ya iniciado");
-            alert.setHeaderText("El juego ya está en progreso");
-            alert.setContentText("No puedes iniciar un nuevo juego mientras otro está en progreso.");
-            alert.showAndWait();
-            return;
+    private void nextTabla() {
+        ind_Tabla = (ind_Tabla + 1) % 5;
+        gdpTabla = Lista_Tablas[ind_Tabla];
+        vboxTablilla.getChildren().setAll(gdpTabla, hboxButtons);
+        hboxMain.getChildren().set(0, vboxTablilla);
+    }
+
+    private void lastTabla() {
+        ind_Tabla = (ind_Tabla == 0) ? 4 : ind_Tabla - 1;
+        gdpTabla = Lista_Tablas[ind_Tabla];
+        vboxTablilla.getChildren().setAll(gdpTabla, hboxButtons);
+        hboxMain.getChildren().set(0, vboxTablilla);
+    }
+
+    private void alternarEstadoJuego() {
+        switch (Inic_Det.getText()) {
+            case "Iniciar":
+                iniciarTemporizador();
+                break;
+            case "Detener":
+                detenerTemporizador();
+                break;
+            case "Resultado":
+                mostrarResultado();
+                break;
         }
+    }
 
-        juegoActivo = true;
-        tiempoRestante = 5; // Reiniciar el tiempo a 5 segundos
-        lbTimer.setText("00:05");
+    private void iniciarTemporizador() {
+        Inic_Det.setText("Detener");
+        cambiarCarta();
+        Cont.setText("00:05");
 
-        List<String> cartas = new ArrayList<>(Arrays.asList(arrImages));
-        Collections.shuffle(cartas);
+        timeline = new Timeline(new KeyFrame(Duration.seconds(1), evento -> actualizarContador()));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
+    }
 
-        new Thread(() -> {
-            for (String carta : cartas) {
-                if (!juegoActivo) return; // Si el juego no está activo, salir
+    private void detenerTemporizador() {
+        Inic_Det.setText("Iniciar");
+        if (timeline != null) {
+            timeline.stop();
+        }
+    }
 
-                mostrarCarta(carta);
-                try {
-                    Thread.sleep(5000); // Esperar 5 segundos
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
+    private void mostrarResultado() {
+        G_P = new Label();
+        G_P.setId("font-G_P");
+
+        // Verifica si el jugador ha marcado todas las casillas de la tabla actual
+        boolean gano = true;
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (!Matriz_B[ind_Tabla][i][j]) {  // Si alguna casilla no está marcada, no ha ganado
+                    gano = false;
+                    break;
                 }
             }
-            verificarGanador();
-        }).start();
-
-        btnAnt.setDisable(true);
-        btnSig.setDisable(true);
-
-        // Iniciar el temporizador
-        startTimer();
-    }
-
-    private void startTimer() {
-        // Detener cualquier temporizador anterior
-        if (timer != null) {
-            timer.stop();
+            if (!gano) break;
         }
 
-        // Configurar el temporizador
-        timer = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
-            tiempoRestante--;
-            lbTimer.setText(String.format("00:%02d", tiempoRestante));
+        G_P.setText(gano ? "¡Ganaste!" : "¡Perdiste! Debes prestar más atención.");
 
-            if (tiempoRestante <= 0) {
-                timer.stop();
-                // Acciones al finalizar el tiempo, por ejemplo, mostrar un mensaje
-                Alert alert = new Alert(Alert.AlertType.INFORMATION, "¡Tiempo terminado!");
-                alert.setTitle("Fin del tiempo");
-                alert.showAndWait();
-                reiniciarJuego(); // Reiniciar el juego al terminar el tiempo
-            }
-        }));
-
-        timer.setCycleCount(5); // Contar hasta 5 segundos
-        timer.play();
+        // Muestra una ventana con el resultado
+        Stage ventanaResultado = new Stage();
+        Scene res = new Scene(G_P);
+        ventanaResultado.setTitle("Resultado");
+        ventanaResultado.setScene(res);
+        ventanaResultado.show();
     }
 
-    private void mostrarCarta(String carta) {
-        // Convertir la carta a un índice
-        int index = Integer.parseInt(carta.replaceAll("[^0-9]", "")) - 1; // Asegúrate de que carta sea el número de la carta
-
-        // Verificar que el índice esté dentro de los límites
-        if (index >= 0 && index < arrImages.length) {
-            // Cargar la imagen
-            Image image = new Image(getClass().getResourceAsStream(arrImages[index]));
-            // Establecer la imagen en imMazo
-            imMazo.setImage(image);
+    private void actualizarContador() {
+        if (Mazo.isEmpty()) {
+            Cont.setText("00:00");
+            // Al final del mazo, muestra el resultado en función de las casillas marcadas
+            mostrarResultado();
+            timeline.stop();
+            Inic_Det.setText("Resultado");
         } else {
-            System.out.println("Error: Índice de carta fuera de límites: " + carta);
+            String tiempoActual = Cont.getText();
+            switch (tiempoActual) {
+                case "00:05":
+                    Cont.setText("00:04");
+                    break;
+                case "00:04":
+                    Cont.setText("00:03");
+                    break;
+                case "00:03":
+                    Cont.setText("00:02");
+                    break;
+                case "00:02":
+                    Cont.setText("00:01");
+                    break;
+                case "00:01":
+                    Cont.setText("00:00");
+                    cambiarCarta();
+                    Cont.setText("00:05"); // Reinicia el contador
+                    break;
+                default:
+                    Cont.setText("00:05");
+                    break;
+            }
         }
     }
 
-    private void verificarGanador() {
-        if (!juegoActivo) return;
 
-        boolean todasMarcadas = Arrays.stream(arTab[currentTab]).allMatch(btn -> btn.isDisabled());
+    private void cambiarCarta() {
+        if (!Mazo.isEmpty()) {
+            int numeroCarta = Mazo.remove(0);
+            cartasMostradas.add(numeroCarta);
+            Baraja.setImage(new Image(path + "l" + numeroCarta + ".png"));
+        }
+    }
 
+    private void mostrarAlerta(String titulo, String mensaje) {
         Platform.runLater(() -> {
-            String mensaje = todasMarcadas ? "¡Ganaste!" : "¡Perdiste!";
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, mensaje);
-            alert.setTitle("Resultado");
-            alert.showAndWait();
+            Alert alerta = new Alert(Alert.AlertType.INFORMATION);
+            alerta.setTitle(titulo);
+            alerta.setHeaderText(null);
+            alerta.setContentText(mensaje);
+            alerta.showAndWait();
         });
-
-        // Reiniciar el juego al finalizar
-        reiniciarJuego();
     }
 
-    private void reiniciarJuego() {
-        juegoActivo = false; // Terminar el juego actual
-        for (int k = 0; k < 5; k++) {
-            for (Button btn : arTab[k]) {
-                btn.setDisable(false); // Habilitar todos los botones
-                btn.setVisible(true); // Asegurarse de que sean visibles
-            }
+    private void numImages() {
+        numerosDisponibles = new ArrayList<>();
+        Mazo = new ArrayList<>();
+        for (int i = 1; i <= 54; i++) {
+            numerosDisponibles.add(i);
+            Mazo.add(i);
         }
-        lbTimer.setText("00:00"); // Reiniciar el temporizador
-        if (timer != null) {
-            timer.stop(); // Detener el temporizador si está activo
-        }
-        btnAnt.setDisable(false); // Habilitar botones de navegación
-        btnSig.setDisable(false);
+        Collections.shuffle(Mazo);
     }
 
-    private void CrearTablilla(GridPane gdTab, int k) {
-        // Lista de imágenes que se utilizarán en la tablilla
-        List<String> imageList = new ArrayList<>(Arrays.asList(arrImages));
-        Collections.shuffle(imageList); // Barajar las imágenes
-
-        for (int i = 0; i < 4; i++) { // Iterar sobre las filas
-            for (int j = 0; j < 4; j++) { // Iterar sobre las columnas
-                // Crear el botón
-                Button btn = new Button();
-
-                // Crear el ImageView con la imagen de la carta
-                ImageView imageView = new ImageView(new Image(getClass().getResource(imageList.get(i * 4 + j)).toString()));
-
-                // Ajustar el tamaño de la imagen
-                imageView.setFitHeight(80); // Cambia este valor según lo necesites
-                imageView.setFitWidth(60);   // Cambia este valor según lo necesites
-
-                // Establecer la imagen en el botón
-                btn.setGraphic(imageView);
-                btn.setOnAction(e -> {
-                    btn.setDisable(true); // Deshabilitar el botón al ser seleccionado
-                });
-
-                // Guardar el botón en el array
-                arTab[k][i * 4 + j] = btn;
-                // Añadir botón al GridPane en la posición correspondiente
-                gdTab.add(btn, j, i);
-            }
-        }
-    }
-
-
-    private void actualizarTab() {
-        // Actualizar la tablilla visible
-        for (int k = 0; k < 5; k++) {
-            arTab[k][0].setVisible(k == currentTab);
-        }
-    }
 }
