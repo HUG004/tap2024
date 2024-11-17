@@ -58,8 +58,14 @@ public class ViewCliente extends Stage {
     }
 
     private void verHistorialCompras() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Historial de compras del usuario.");
-        alert.showAndWait();
+        VentaDAO ventaDAO = new VentaDAO();
+        ObservableList<CancionDAO> historial = ventaDAO.obtenerHistorialCompras(clienteActual.getIdClt());
+
+        if (!historial.isEmpty()) {
+            tbvCanciones.setItems(historial);
+        } else {
+            new Alert(Alert.AlertType.INFORMATION, "No hay compras registradas para este cliente.").showAndWait();
+        }
     }
 
     private void verDatosPersonales() {

@@ -29,16 +29,16 @@ public class Loteria extends Stage {
     private Timeline timeline;
     private HBox hboxMain, hboxButtons;
     private VBox vboxTablilla, vboxMazo;
-    private Button Anterior, Siguiente, Inic_Det;
+    private Button Anterior, Siguiente, btnIniDet;
     private Scene escena;
-    private List<Integer> numerosDisponibles, Mazo;
+    private List<Integer> Mazo, numDisp;
+    private ImageView imgMazo;
+    private Label Cont, resultado;
+    private GridPane gdpTablilla;
+    private GridPane[] tablas = new GridPane[5];
+    private int ind_Tabla = 0;
     private Button[][][] arBtnTab = new Button[5][4][4];
     private Boolean[][][] Matriz_B = new Boolean[5][4][4];
-    private ImageView Baraja;
-    private Label Cont, G_P;
-    private GridPane gdpTabla;
-    private GridPane[] Lista_Tablas = new GridPane[5];
-    private int ind_Tabla = 0;
     private List<Integer> cartasMostradas = new ArrayList<>();
     private int[][][] numerosCartas = new int[5][4][4];
 
@@ -62,20 +62,20 @@ public class Loteria extends Stage {
         nextImgView.setFitHeight(50);
 
         for (int i = 0; i < 5; i++) {
-            Lista_Tablas[i] = new GridPane();
-            CrearTablilla(Lista_Tablas[i], i);
+            tablas[i] = new GridPane();
+            CrearTablilla(tablas[i], i);
         }
 
         Cont = new Label("Contador");
         Cont.setFont(new Font("Arial", 30));
         Cont.setTextFill(Color.BLUE);
-        Baraja = new ImageView(new Image(new File(path + "dorso.png").toURI().toString()));
-        Baraja.setFitHeight(500);
-        Baraja.setFitWidth(400);
-        Inic_Det = new Button("Iniciar");
-        Inic_Det.getStyleClass().add("boton-iniciar");
+        imgMazo = new ImageView(new Image(new File(path + "dorso.png").toURI().toString()));
+        imgMazo.setFitHeight(500);
+        imgMazo.setFitWidth(400);
+        btnIniDet = new Button("Iniciar");
+        btnIniDet.getStyleClass().add("boton-iniciar");
 
-        vboxMazo = new VBox(Cont, Baraja);
+        vboxMazo = new VBox(Cont, imgMazo);
         vboxMazo.setAlignment(Pos.CENTER);
 
         Anterior = new Button();
@@ -85,12 +85,12 @@ public class Loteria extends Stage {
         Siguiente.setOnAction(actionEvent -> nextTabla());
         Anterior.setOnAction(actionEvent -> lastTabla());
 
-        Inic_Det.setOnAction(actionEvent -> alternarEstadoJuego());
-        hboxButtons = new HBox(Anterior, Siguiente, Inic_Det);
+        btnIniDet.setOnAction(actionEvent -> alternarEstadoJuego());
+        hboxButtons = new HBox(Anterior, Siguiente, btnIniDet);
         hboxButtons.setSpacing(50);
 
-        gdpTabla = Lista_Tablas[ind_Tabla];
-        vboxTablilla = new VBox(gdpTabla, hboxButtons);
+        gdpTablilla = tablas[ind_Tabla];
+        vboxTablilla = new VBox(gdpTablilla, hboxButtons);
 
         hboxMain = new HBox(vboxTablilla, vboxMazo);
         hboxMain.setSpacing(190);
@@ -100,7 +100,7 @@ public class Loteria extends Stage {
     }
 
     private void CrearTablilla(GridPane listaTabla, int k) {
-        List<Integer> cartasTemporales = new ArrayList<>(numerosDisponibles);
+        List<Integer> cartasTemporales = new ArrayList<>(numDisp);
         Collections.shuffle(cartasTemporales);
 
         for (int i = 0; i < 4; i++) {
@@ -129,20 +129,20 @@ public class Loteria extends Stage {
 
     private void nextTabla() {
         ind_Tabla = (ind_Tabla + 1) % 5;
-        gdpTabla = Lista_Tablas[ind_Tabla];
-        vboxTablilla.getChildren().setAll(gdpTabla, hboxButtons);
+        gdpTablilla = tablas[ind_Tabla];
+        vboxTablilla.getChildren().setAll(gdpTablilla, hboxButtons);
         hboxMain.getChildren().set(0, vboxTablilla);
     }
 
     private void lastTabla() {
         ind_Tabla = (ind_Tabla == 0) ? 4 : ind_Tabla - 1;
-        gdpTabla = Lista_Tablas[ind_Tabla];
-        vboxTablilla.getChildren().setAll(gdpTabla, hboxButtons);
+        gdpTablilla = tablas[ind_Tabla];
+        vboxTablilla.getChildren().setAll(gdpTablilla, hboxButtons);
         hboxMain.getChildren().set(0, vboxTablilla);
     }
 
     private void alternarEstadoJuego() {
-        switch (Inic_Det.getText()) {
+        switch (btnIniDet.getText()) {
             case "Iniciar":
                 iniciarTemporizador();
                 break;
@@ -156,7 +156,7 @@ public class Loteria extends Stage {
     }
 
     private void iniciarTemporizador() {
-        Inic_Det.setText("Detener");
+        btnIniDet.setText("Detener");
         cambiarCarta();
         Cont.setText("00:05");
 
@@ -166,15 +166,15 @@ public class Loteria extends Stage {
     }
 
     private void detenerTemporizador() {
-        Inic_Det.setText("Iniciar");
+        btnIniDet.setText("Iniciar");
         if (timeline != null) {
             timeline.stop();
         }
     }
 
     private void mostrarResultado() {
-        G_P = new Label();
-        G_P.setId("font-G_P");
+        resultado = new Label();
+        resultado.setId("font-G_P");
 
         // Verifica si el jugador ha marcado todas las casillas de la tabla actual
         boolean gano = true;
@@ -188,11 +188,11 @@ public class Loteria extends Stage {
             if (!gano) break;
         }
 
-        G_P.setText(gano ? "¡Ganaste!" : "¡Perdiste! Debes prestar más atención.");
+        resultado.setText(gano ? "¡Ganaste!" : "¡Perdiste! Debes prestar más atención.");
 
         // Muestra una ventana con el resultado
         Stage ventanaResultado = new Stage();
-        Scene res = new Scene(G_P);
+        Scene res = new Scene(resultado);
         ventanaResultado.setTitle("Resultado");
         ventanaResultado.setScene(res);
         ventanaResultado.show();
@@ -204,7 +204,7 @@ public class Loteria extends Stage {
             // Al final del mazo, muestra el resultado en función de las casillas marcadas
             mostrarResultado();
             timeline.stop();
-            Inic_Det.setText("Resultado");
+            btnIniDet.setText("Resultado");
         } else {
             String tiempoActual = Cont.getText();
             switch (tiempoActual) {
@@ -232,33 +232,20 @@ public class Loteria extends Stage {
         }
     }
 
-
     private void cambiarCarta() {
         if (!Mazo.isEmpty()) {
             int numeroCarta = Mazo.remove(0);
             cartasMostradas.add(numeroCarta);
-            Baraja.setImage(new Image(path + "l" + numeroCarta + ".png"));
+            imgMazo.setImage(new Image(path + "l" + numeroCarta + ".png"));
         }
     }
-
-    private void mostrarAlerta(String titulo, String mensaje) {
-        Platform.runLater(() -> {
-            Alert alerta = new Alert(Alert.AlertType.INFORMATION);
-            alerta.setTitle(titulo);
-            alerta.setHeaderText(null);
-            alerta.setContentText(mensaje);
-            alerta.showAndWait();
-        });
-    }
-
     private void numImages() {
-        numerosDisponibles = new ArrayList<>();
+        numDisp = new ArrayList<>();
         Mazo = new ArrayList<>();
         for (int i = 1; i <= 54; i++) {
-            numerosDisponibles.add(i);
+            numDisp.add(i);
             Mazo.add(i);
         }
         Collections.shuffle(Mazo);
     }
-
 }

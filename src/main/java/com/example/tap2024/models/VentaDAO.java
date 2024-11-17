@@ -98,6 +98,29 @@ public class VentaDAO {
         return rowCount;
     }
 
-
+    public ObservableList<CancionDAO> obtenerHistorialCompras(int idCliente) {
+        ObservableList<CancionDAO> historialCompras = FXCollections.observableArrayList();
+        String query = """
+            SELECT tblCancion.ID_Cancion, tblCancion.NomCancion, tblCancion.costoCancion
+            FROM tblVentas
+            INNER JOIN Ventas_Cancion ON tblVentas.ID_Venta = Ventas_Cancion.idVenta
+            INNER JOIN tblCancion ON tblCancion.ID_Cancion = Ventas_Cancion.idCancion
+            WHERE tblVentas.idClt = ?
+            """;
+        try (PreparedStatement stmt = Conexion.conexion.prepareStatement(query)) {
+            stmt.setInt(1, idCliente);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                CancionDAO cancion = new CancionDAO();
+                cancion.setIdCancion(rs.getInt("ID_Cancion"));
+                cancion.setNombre(rs.getString("NomCancion"));
+                cancion.setCostoCancion(rs.getFloat("costoCancion"));
+                historialCompras.add(cancion);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return historialCompras;
+    }
 
 }
