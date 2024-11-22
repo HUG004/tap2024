@@ -123,9 +123,41 @@ public class Loteria extends Stage {
     }
 
     private void Marcar(int tab_Ind, int x, int y) {
-        arBtnTab[tab_Ind][x][y].setStyle("-fx-background-color: green;");
-        Matriz_B[tab_Ind][x][y] = true;
+        int cartaEnCasilla = numerosCartas[tab_Ind][x][y];
+
+        // Verificar si la carta ya ha salido
+        if (cartasMostradas.contains(cartaEnCasilla)) {
+            // Marcar la casilla y cambiar su estilo
+            arBtnTab[tab_Ind][x][y].setStyle("-fx-background-color: green;");
+            Matriz_B[tab_Ind][x][y] = true;
+
+            // Verificar si todas las casillas de la tabla están marcadas
+            if (verificarGanador(tab_Ind)) {
+                detenerTemporizador();
+                mostrarResultado(); // Mostrar mensaje de victoria
+            }
+        } else {
+            // Mostrar alerta de que la carta aún no ha salido
+            Alert alerta = new Alert(Alert.AlertType.INFORMATION);
+            alerta.setTitle("Movimiento inválido");
+            alerta.setHeaderText(null);
+            alerta.setContentText("¡La carta de esta casilla aún no ha salido en la baraja!");
+            alerta.showAndWait();
+        }
     }
+
+    private boolean verificarGanador(int tab_Ind) {
+        // Verificar si todas las casillas de la tabla están marcadas
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (!Matriz_B[tab_Ind][i][j]) {
+                    return false; // Si encuentra una casilla no marcada, no hay ganador
+                }
+            }
+        }
+        return true; // Todas las casillas están marcadas
+    }
+
 
     private void nextTabla() {
         ind_Tabla = (ind_Tabla + 1) % 5;

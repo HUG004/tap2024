@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -14,9 +15,11 @@ import javafx.stage.Stage;
 public class ViewCliente extends Stage {
     private TableView<CancionDAO> tbvCanciones;
     private VBox vBox;
+    private HBox hBox;
     private Scene escena;
     private Button btnVerHistorial, btnVerDatosPersonales, btnAgregarVenta;
     private ClienteDAO clienteActual;
+    private Button btnCerrarSesion;
 
     public ViewCliente(ClienteDAO cliente) {
         this.clienteActual = cliente;  // Guardamos el cliente que inició sesión
@@ -28,7 +31,9 @@ public class ViewCliente extends Stage {
 
     private void CrearUI() {
         tbvCanciones = new TableView<>();
-        CrearTable();
+
+        btnCerrarSesion = new Button("Cerrar Sesión");
+        btnCerrarSesion.setOnAction(event -> cerrarSesion());
 
         btnAgregarVenta = new Button("Agregar Compra");
         btnAgregarVenta.setOnAction(event -> mostrarDialogoCompra());
@@ -38,8 +43,10 @@ public class ViewCliente extends Stage {
 
         btnVerHistorial.setOnAction(event -> verHistorialCompras());
         btnVerDatosPersonales.setOnAction(event -> verDatosPersonales());
-
-        vBox = new VBox(10, btnAgregarVenta, tbvCanciones, btnVerHistorial, btnVerDatosPersonales);
+        CrearTable();
+        hBox = new HBox(10); // Espacio de 10 entre botones
+        hBox.getChildren().addAll(btnCerrarSesion, btnVerHistorial, btnVerDatosPersonales);
+        vBox = new VBox(10, btnAgregarVenta, tbvCanciones, hBox);
         escena = new Scene(vBox, 600, 400);
         escena.getStylesheets().add(getClass().getResource("/styles/Listas.CSS").toExternalForm());
     }
@@ -58,15 +65,9 @@ public class ViewCliente extends Stage {
     }
 
     private void verHistorialCompras() {
-        VentaDAO ventaDAO = new VentaDAO();
-        ObservableList<CancionDAO> historial = ventaDAO.obtenerHistorialCompras(clienteActual.getIdClt());
-
-        if (!historial.isEmpty()) {
-            tbvCanciones.setItems(historial);
-        } else {
-            new Alert(Alert.AlertType.INFORMATION, "No hay compras registradas para este cliente.").showAndWait();
-        }
+        new ViewHistorialCompras(clienteActual.getIdClt()); // Abre la nueva ventana
     }
+
 
     private void verDatosPersonales() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION,
@@ -108,5 +109,9 @@ public class ViewCliente extends Stage {
         } else {
             new Alert(Alert.AlertType.ERROR, "Error al realizar la compra.").showAndWait();
         }
+    }
+    private void cerrarSesion() {
+        new Login(); // Abrir la ventana de Login
+        this.close(); // Cerrar la ventana actual
     }
 }

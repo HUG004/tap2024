@@ -14,6 +14,7 @@ public class Spotify extends Stage {
     private HBox hbox;
     private Label lbl_spoti;
     private Button btn_Clt, btn_Art, btn_Alb, btn_Ven,btn_Gen, btn_Can,btn_AxC,btnAlb_C,btnV_C;
+    private Button btnCerrarSesion;
 
     public Spotify() {
         CrearUI();
@@ -23,6 +24,9 @@ public class Spotify extends Stage {
     }
 
     private void CrearUI() {
+        btnCerrarSesion = new Button("Cerrar Sesión");
+        btnCerrarSesion.setOnAction(event -> cerrarSesion());
+
         btn_Clt = new Button("Cliente");
         btn_Clt.setOnAction(actionEvent -> new ListaClientes());
 
@@ -56,8 +60,13 @@ public class Spotify extends Stage {
         hbox.getChildren().addAll(btn_Clt, btn_Art, btn_Ven,btn_Gen,btn_Alb,btn_Can,btn_AxC,btnAlb_C,btnV_C);
 
         vbox = new VBox(20); // Espacio de 20 entre componentes del VBox
-        vbox.getChildren().addAll(lbl_spoti, hbox);
+        vbox.getChildren().addAll(lbl_spoti, hbox, btnCerrarSesion);
 
-        escena = new Scene(vbox, 900, 200); // Ajustamos el tamaño de la ventana
+        escena = new Scene(vbox, 1150, 200); // Ajustamos el tamaño de la ventana
+        escena.getStylesheets().add(getClass().getResource("/styles/Listas.CSS").toExternalForm());
+    }
+    private void cerrarSesion() {
+        new Login(); // Abrir la ventana de Login
+        this.close(); // Cerrar la ventana actual
     }
 }

@@ -122,5 +122,8 @@ public class VentaDAO {
         }
         return historialCompras;
     }
-
+    @Override
+    public String toString() {
+        return String.valueOf(idVenta); // Retorna el ID de la venta como texto
+    }
 }
