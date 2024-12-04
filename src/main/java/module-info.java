@@ -8,6 +8,8 @@ module com.example.tap2024 {
     requires org.kordamp.bootstrapfx.core;
     requires java.sql;
     requires javafx.graphics;
+    requires java.desktop;
+    requires itextpdf;
     opens com.example.tap2024.models;
 
 }

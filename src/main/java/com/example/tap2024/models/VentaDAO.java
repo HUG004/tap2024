@@ -2,6 +2,9 @@ package com.example.tap2024.models;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.PieChart;
+import javafx.scene.chart.XYChart;
 
 import java.sql.*;
 
@@ -10,6 +13,15 @@ public class VentaDAO {
     private float precio;
     private int idCliente;
     private String nombreCliente;
+    private String fechaVenta;
+
+    public String getFechaVenta() {
+        return fechaVenta;
+    }
+
+    public void setFechaVenta(String fechaVenta) {
+        this.fechaVenta = fechaVenta;
+    }
 
     // Getters y Setters
     public int getIdVenta() {
@@ -47,7 +59,8 @@ public class VentaDAO {
 
     public int INSERT() {
         int rowCount;
-        String query = "INSERT INTO tblVentas (Precio, idClt) VALUES (" + this.precio + ", " + this.idCliente + ")";
+        String query = "INSERT INTO tblVentas (Precio, idClt, FechaVenta) VALUES ("
+                + this.precio + ", " + this.idCliente + ", CURDATE())";
         try {
             Statement stmt = Conexion.conexion.createStatement();
             rowCount = stmt.executeUpdate(query);
@@ -58,11 +71,10 @@ public class VentaDAO {
         return rowCount;
     }
 
-
     public ObservableList<VentaDAO> SELECTALL() {
         ObservableList<VentaDAO> listaVentas = FXCollections.observableArrayList();
         String query = """
-        SELECT v.ID_Venta, v.Precio, v.idClt, c.nomClt AS Nombre
+        SELECT v.ID_Venta, v.Precio, v.idClt, c.nomClt AS Nombre, v.FechaVenta
         FROM tblVentas v
         JOIN tblcliente c ON v.idClt = c.idClt
     """;
@@ -76,6 +88,7 @@ public class VentaDAO {
                 venta.setPrecio(res.getFloat("Precio"));
                 venta.setIdCliente(res.getInt("idClt"));
                 venta.setNombreCliente(res.getString("Nombre"));
+                venta.setFechaVenta(res.getDate("FechaVenta").toString());
                 listaVentas.add(venta);
             }
         } catch (SQLException e) {
@@ -83,20 +96,93 @@ public class VentaDAO {
         }
         return listaVentas;
     }
+    public int obtenerVentasDelMes() {
+        int totalVentas = 0;
+        String query = """
+        SELECT COUNT(*) AS totalVentas
+        FROM tblVentas
+        WHERE MONTH(FechaVenta) = MONTH(CURDATE()) AND YEAR(FechaVenta) = YEAR(CURDATE())
+        """;
 
+        try (Statement stmt = Conexion.conexion.createStatement();
+             ResultSet res = stmt.executeQuery(query)) {
 
-
-    public int UPDATE() {
-        int rowCount = 0;
-        String query = "UPDATE tblVentas SET Precio = " + this.precio + " WHERE ID_Venta = " + this.idVenta;
-        try {
-            Statement stmt = Conexion.conexion.createStatement();
-            rowCount = stmt.executeUpdate(query);
+            if (res.next()) {
+                totalVentas = res.getInt("totalVentas");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return rowCount;
+        return totalVentas;
     }
+
+    public static ObservableList<PieChart.Data> obtenerArtistasConMasVentas() {
+        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+
+        // Consulta que relaciona ventas con artistas
+        String query = """
+        SELECT a.nomArt AS artista, COUNT(vc.idVenta) AS ventas
+        FROM Ventas_Cancion vc
+        JOIN Cancion_Artista ca ON vc.idCancion = ca.idCancion
+        JOIN tblArtista a ON ca.idArtista = a.idArt
+        GROUP BY a.nomArt
+    """;
+
+        try (Statement stmt = Conexion.conexion.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            while (rs.next()) {
+                String artista = rs.getString("artista");
+                int ventas = rs.getInt("ventas");
+                pieChartData.add(new PieChart.Data(artista, ventas));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return pieChartData;
+    }
+
+    public static ObservableList<XYChart.Data<String, Number>> obtenerCancionesMasVendidas() {
+        ObservableList<XYChart.Data<String, Number>> barChartData = FXCollections.observableArrayList();
+
+        String query = """
+        SELECT c.NomCancion AS cancion, COUNT(vc.idVenta) AS ventas
+        FROM Ventas_Cancion vc
+        INNER JOIN tblCancion c ON vc.idCancion = ID_Cancion
+        GROUP BY c.NomCancion
+        ORDER BY ventas DESC
+        """;
+
+        try (Statement stmt = Conexion.conexion.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            while (rs.next()) {
+                String cancion = rs.getString("cancion");
+                int ventas = rs.getInt("ventas");
+                barChartData.add(new XYChart.Data<>(cancion, ventas));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return barChartData;
+    }
+
+
+    public int UPDATE() {
+        String query = "UPDATE tblVentas SET Precio = ?, idClt = ? WHERE ID_Venta = ?";
+        try (PreparedStatement stmt = Conexion.conexion.prepareStatement(query)) {
+            stmt.setFloat(1, this.precio);
+            stmt.setInt(2, this.idCliente);
+            stmt.setInt(3, this.idVenta);
+            return stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0; // Return 0 si falla
+    }
+
 
     public ObservableList<CancionDAO> obtenerHistorialCompras(int idCliente) {
         ObservableList<CancionDAO> historialCompras = FXCollections.observableArrayList();

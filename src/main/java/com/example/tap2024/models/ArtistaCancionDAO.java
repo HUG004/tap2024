@@ -1,5 +1,6 @@
 package com.example.tap2024.models;
 
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javafx.collections.FXCollections;
@@ -64,18 +65,16 @@ public class ArtistaCancionDAO {
     }
 
     public int INSERT() {
-        int rowCount;
-        String query = "INSERT INTO Cancion_Artista(idartista, idcancion, interpretado) " +
-                "VALUES (" + this.idArtista + ", " + this.idCancion + ", '" + this.interpretado + "')";
-        try {
-            Statement stmt = Conexion.conexion.createStatement();
-            rowCount = stmt.
-                    executeUpdate(query);
+        String query = "INSERT INTO Cancion_Artista(idartista, idcancion, interpretado) VALUES (?, ?, ?)";
+        try (PreparedStatement stmt = Conexion.conexion.prepareStatement(query)) {
+            stmt.setInt(1, this.idArtista);
+            stmt.setInt(2, this.idCancion);
+            stmt.setString(3, this.interpretado);
+            return stmt.executeUpdate();  // Return the number of affected rows
         } catch (SQLException e) {
             e.printStackTrace();
-            rowCount = 0;
+            return 0;
         }
-        return rowCount;
     }
 
     public void UPDATE() {

@@ -1,5 +1,6 @@
 package com.example.tap2024.models;
 
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javafx.collections.FXCollections;
@@ -63,20 +64,20 @@ public class VentaCancionDAO {
         return rowCount;
     }
 
-    // Método para verificar si la relación ya existe
     private boolean exists(int idCancion, int idVenta) {
-        String query = "SELECT COUNT(*) FROM Ventas_Cancion WHERE idCancion = " + idCancion + " AND idVenta = " + idVenta;
-        try {
-            Statement stmt = Conexion.conexion.createStatement();
-            ResultSet rs = stmt.executeQuery(query);
-            if (rs.next()) {
-                return rs.getInt(1) > 0; // Retorna true si existe al menos una fila
+        String query = "SELECT COUNT(*) FROM Ventas_Cancion WHERE idCancion = ? AND idVenta = ?";
+        try (PreparedStatement stmt = Conexion.conexion.prepareStatement(query)) {
+            stmt.setInt(1, idCancion);
+            stmt.setInt(2, idVenta);
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next() && rs.getInt(1) > 0;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false; // Retorna false si ocurre un error o no existe
+        return false;
     }
+
 
     public void UPDATE() {
         String query = "UPDATE Ventas_Cancion SET idCancion = " + this.idCancion +

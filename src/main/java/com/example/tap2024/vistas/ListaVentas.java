@@ -54,8 +54,11 @@ public class ListaVentas extends Stage {
         TableColumn<VentaDAO, String> tbcNombreCliente = new TableColumn<>("Nombre Cliente");
         tbcNombreCliente.setCellValueFactory(new PropertyValueFactory<>("nombreCliente"));
 
+        TableColumn<VentaDAO, String> tbcFechaVenta = new TableColumn<>("Fecha Venta");
+        tbcFechaVenta.setCellValueFactory(new PropertyValueFactory<>("fechaVenta"));
+
         // Agregar columnas a la tabla
-        tbvVentas.getColumns().addAll(tbcIdVenta, tbcPrecio, tbcIdCliente, tbcNombreCliente);
+        tbvVentas.getColumns().addAll(tbcIdVenta, tbcPrecio, tbcIdCliente, tbcNombreCliente, tbcFechaVenta);
 
         // Cargar las ventas desde la base de datos
         tbvVentas.setItems(objVenta.SELECTALL());

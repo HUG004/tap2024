@@ -1,5 +1,6 @@
 package com.example.tap2024.vistas;
 
+import com.example.tap2024.components.ReportePDF;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -13,7 +14,7 @@ public class Spotify extends Stage {
     private VBox vbox;
     private HBox hbox;
     private Label lbl_spoti;
-    private Button btn_Clt, btn_Art, btn_Alb, btn_Ven,btn_Gen, btn_Can,btn_AxC,btnAlb_C,btnV_C;
+    private Button btn_Clt, btn_Art, btn_Alb, btn_Ven,btn_Gen, btn_Can,btn_AxC,btnAlb_C,btnV_C, btnEstadisticas, btnRepTotal;
     private Button btnCerrarSesion;
 
     public Spotify() {
@@ -54,10 +55,15 @@ public class Spotify extends Stage {
         btnV_C= new Button ("Relacion Venta - Cancion");
         btnV_C.setOnAction(actionEvent -> new ListaVentaCancion());
 
+        btnEstadisticas = new Button("Estadisticas");
+        btnEstadisticas.setOnAction(actionEvent -> new EstadisticasVentas());
+        btnRepTotal = new Button("Reporte total de artistas y canciones");
+        btnRepTotal.setOnAction(actionEvent -> new ReportePDF());
+
         lbl_spoti = new Label("Tablas");
 
         hbox = new HBox(10); // Espacio de 10 entre botones
-        hbox.getChildren().addAll(btn_Clt, btn_Art, btn_Ven,btn_Gen,btn_Alb,btn_Can,btn_AxC,btnAlb_C,btnV_C);
+        hbox.getChildren().addAll(btn_Clt, btn_Art, btn_Ven,btn_Gen,btn_Alb,btn_Can,btn_AxC,btnAlb_C,btnV_C,btnEstadisticas, btnRepTotal);
 
         vbox = new VBox(20); // Espacio de 20 entre componentes del VBox
         vbox.getChildren().addAll(lbl_spoti, hbox, btnCerrarSesion);
